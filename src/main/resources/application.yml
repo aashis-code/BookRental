@@ -1,0 +1,17 @@
+#DATABASE SETUP
+spring:
+  application:
+    name: BOOK_RENTAL
+  datasource:
+        url: jdbc:postgresql://localhost:5432/Book-Rental
+        username: postgres
+        password: admin
+        driverClassName: org.postgresql.Driver
+
+#HIBERNATE CONFIGURATION
+  jpa:
+        properties:
+            hibenate:
+               dialect: org.hibernate.dialect.PostgreSQLDialect
+        hibernate.ddl-auto: update
+        show-sql: true    
