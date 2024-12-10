@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import com.bookrental.dto.AuthorDto;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.model.Author;
-import com.bookrental.modelmapper.AuthorModelMapper;
 import com.bookrental.repository.AuthorRepo;
 import com.bookrental.service.AuthorService;
 

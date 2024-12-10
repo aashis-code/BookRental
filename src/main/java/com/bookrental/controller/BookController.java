@@ -16,8 +16,6 @@ import com.bookrental.helper.ExcelHelper;
 import com.bookrental.helper.ResponseObject;
 import com.bookrental.service.BookService;
 
-import lombok.Getter;
-
 @RestController
 @RequestMapping(path = "/api/book")
 public class BookController {
@@ -46,10 +44,10 @@ public class BookController {
 		bookService.addBooks(bookAddRequests);
 		return new ResponseObject(true, "Books successfully added !", null);
 	}
-	
+
 	@GetMapping("/")
 	public ResponseObject getAllBooks() {
-		return new ResponseObject(true,"Fetched successfully",bookService.getAllBooks());
+		return new ResponseObject(true, "Fetched successfully", bookService.getAllBooks());
 	}
 
 }

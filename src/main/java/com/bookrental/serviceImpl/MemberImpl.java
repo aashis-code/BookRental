@@ -2,6 +2,7 @@ package com.bookrental.serviceImpl;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.bookrental.dto.MemberDto;
@@ -15,6 +16,9 @@ public class MemberImpl implements MemberService {
 
 	@Autowired
 	private MemberRepo memberRepo;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Override
 	public boolean memberOperation(MemberDto memberDto) {
@@ -32,6 +36,7 @@ public class MemberImpl implements MemberService {
 		} else {
 			Member member = new Member();
 			BeanUtils.copyProperties(memberDto, member, "id");
+			member.setPassword(passwordEncoder.encode(memberDto.getPassword()));
 			memberRepo.save(member);
 			return true;
 		}
