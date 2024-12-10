@@ -1,5 +1,6 @@
 package com.bookrental.configuration;
 
+import com.bookrental.service.MemberDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,58 +19,45 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.repository.MemberRepo;
 import com.bookrental.security.JwtAuthenticationFilter;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-	
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final MemberRepo memberRepo;
-    
-    public SecurityConfiguration(
-            JwtAuthenticationFilter jwtAuthenticationFilter,
-            MemberRepo memberRepo
-        ) {
-            this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-            this.memberRepo=memberRepo;
-        }
-    
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests
-                (auth -> auth.requestMatchers("auth/**","/api/member/**").permitAll()
-                .anyRequest().authenticated())
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
-    
+
+	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final MemberDetailsService memberDetailsService;
+
+	public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, MemberDetailsService memberDetailsService) {
+		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+		this.memberDetailsService = memberDetailsService;
+	}
+
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http.csrf(AbstractHttpConfigurer::disable)
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers("auth/**", "/api/member/**").permitAll()
+						.anyRequest().authenticated())
+				.authenticationProvider(authenticationProvider())
+				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+		return http.build();
+	}
+
 	@Bean
 	AuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-
-		authProvider.setUserDetailsService(memberDetailsService());
+		authProvider.setUserDetailsService(memberDetailsService);
 		authProvider.setPasswordEncoder(passwordEncoder());
-
 		return authProvider;
 	}
-	
-	@Bean
-	UserDetailsService memberDetailsService() {
-		return userName -> memberRepo.findByEmail(userName)
-				.orElseThrow(() -> new ResourceNotFoundException("Email", userName));
-	}
-	
+
 	@Bean
 	BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
+
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
 		return config.getAuthenticationManager();
 	}
-
 }

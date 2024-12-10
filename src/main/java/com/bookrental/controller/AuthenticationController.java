@@ -19,19 +19,14 @@ import com.bookrental.service.AuthenticationSevice;
 @RequestMapping("/auth")
 @RestController
 public class AuthenticationController {
-
 	private final JwtService jwtService;
-
-	private final AuthenticationSevice authenticationService;
 
 	private final MemberRepo memberRepo;
 
 	private final AuthenticationManager authenticationManager;
 
-	public AuthenticationController(JwtService jwtService, AuthenticationSevice authenticationService,
-			AuthenticationManager authenticationManager, MemberRepo memberRepo) {
+	public AuthenticationController(JwtService jwtService, AuthenticationManager authenticationManager, MemberRepo memberRepo) {
 		this.jwtService = jwtService;
-		this.authenticationService = authenticationService;
 		this.authenticationManager = authenticationManager;
 		this.memberRepo = memberRepo;
 	}

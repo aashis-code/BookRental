@@ -3,9 +3,9 @@ spring:
   application:
     name: BOOK_RENTAL
   datasource:
-        url: jdbc:postgresql://localhost:5432/Book-Rental
+        url: jdbc:postgresql://localhost:5432/Book-rental-aasish
         username: postgres
-        password: admin
+        password: 1234
         driverClassName: org.postgresql.Driver
 
 #HIBERNATE CONFIGURATION
