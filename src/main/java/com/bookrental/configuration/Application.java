@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import com.bookrental.modelmapper.AuthorModelMapper;
 import com.bookrental.modelmapper.BookModelMapper;
 import com.bookrental.modelmapper.CategoryModelMapper;
+import com.bookrental.modelmapper.MemberModelMapper;
 
 @Configuration
 public class Application {
@@ -30,6 +31,11 @@ public class Application {
 	@Bean 
 	public BookModelMapper bookModelMapper() {
 		return new BookModelMapper();
+	}
+	
+	@Bean
+	public MemberModelMapper memberModelMapper() {
+		return new MemberModelMapper();
 	}
 	
 }

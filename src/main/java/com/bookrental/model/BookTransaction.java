@@ -1,110 +1,57 @@
 package com.bookrental.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
-import com.bookrental.helper.RENT_TYPE;
+import com.bookrental.helper.RentType;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Table(name = "bookTransaction", uniqueConstraints = {})
 public class BookTransaction {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	@SequenceGenerator(name = "bookTransaction_gen", allocationSize = 1, sequenceName = "bookTransaction_seq")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bookTransaction_seq")
+	private Integer id;
 
 	private String code;
 
-	private Date from_date;
+	private LocalDate fromDate;
 
-	private Date to_date;
+	private LocalDate toDate;
 
-	private RENT_TYPE rent_status;
+	@Enumerated(EnumType.STRING)
+	private RentType rentStatus;
+
+	private Boolean activeClosed;
 
 	@ManyToOne
-	@JoinColumn(name = "member_id")
+	@JoinColumn(name = "memberId", foreignKey = @ForeignKey(name = "FK_bookTransaction_member"))
 	private Member member;
 
 	@ManyToOne
-	@JoinColumn(name = "book_id")
+	@JoinColumn(name = "bookId", foreignKey = @ForeignKey(name = "FK_bookTransaction_book"))
 	private Book book;
-
-	public BookTransaction() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	public BookTransaction(int id, String code, Date from_date, Date to_date, RENT_TYPE rent_status, Member member,
-			Book book) {
-		super();
-		this.id = id;
-		this.code = code;
-		this.from_date = from_date;
-		this.to_date = to_date;
-		this.rent_status = rent_status;
-		this.member = member;
-		this.book = book;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public Date getFrom_date() {
-		return from_date;
-	}
-
-	public void setFrom_date(Date from_date) {
-		this.from_date = from_date;
-	}
-
-	public Date getTo_date() {
-		return to_date;
-	}
-
-	public void setTo_date(Date to_date) {
-		this.to_date = to_date;
-	}
-
-	public RENT_TYPE getRent_status() {
-		return rent_status;
-	}
-
-	public void setRent_status(RENT_TYPE rent_status) {
-		this.rent_status = rent_status;
-	}
-
-	public Member getMember() {
-		return member;
-	}
-
-	public void setMember(Member member) {
-		this.member = member;
-	}
-
-	public Book getBook() {
-		return book;
-	}
-
-	public void setBook(Book book) {
-		this.book = book;
-	}
 
 }

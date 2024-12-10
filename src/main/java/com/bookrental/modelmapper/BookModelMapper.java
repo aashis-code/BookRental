@@ -18,16 +18,10 @@ public class BookModelMapper {
 		modelMapper.addMappings(new PropertyMap<BookAddRequest, Book>() {
 			@Override
             protected void configure() {
-			  
-			  try {
-				  skip(destination.getClass().getDeclaredField("authors"));
-				  skip(destination.getClass().getDeclaredField("category"));
-				  skip(destination.getClass().getDeclaredField("book_transactions"));
-				  
-			} catch (NoSuchFieldException e) {
-				 e.printStackTrace(); 
-			}
-			 
+				
+				  skip(destination.getAuthors());
+				  skip(destination.getCategory());
+				  skip(destination.getBookTransactions());
 			}
 		});
 		

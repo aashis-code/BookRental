@@ -1,6 +1,6 @@
 package com.bookrental.helper;
 
-public enum RENT_TYPE {
+public enum RentType {
 	    RENT,
 	    RETURN
 }

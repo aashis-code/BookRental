@@ -3,154 +3,64 @@ package com.bookrental.model;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
+@Table(name="book", uniqueConstraints = {@UniqueConstraint(columnNames = {"isbn"})})
 public class Book {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	@SequenceGenerator(name= "book_gen", allocationSize = 1, sequenceName = "book_seq")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_seq")
+	private Integer id;
 
 	private String name;
 
-	private int number_of_pages;
+	private Integer numberOfPages;
 
-	private int isbn;
+	private String isbn;
 
-	private double rating;
+	private Double rating;
 
-	private int stock_count;
+	private Integer stockCount;
 
-	private Date published_date;
+	private Date publishedDate;
 
 	private String photo;
 
-	@ManyToMany(mappedBy = "books", cascade = CascadeType.ALL)
+	@ManyToMany
+	@JoinTable(
+			name="book_author",
+			joinColumns = @JoinColumn(name="book_id", foreignKey = @ForeignKey(name="FK_book_author_book")),
+			inverseJoinColumns = @JoinColumn(name="author_id", foreignKey = @ForeignKey(name = "FK_book_author_author")))
 	private List<Author> authors;
 
 	@ManyToOne
-	@JoinColumn(name = "category_id")
+	@JoinColumn(name = "categoryId", foreignKey = @ForeignKey(name="FK_book_category"))
 	private Category category;
 
 	@OneToMany(mappedBy = "book")
-	private List<BookTransaction> book_transactions;
+	private List<BookTransaction> bookTransactions;
 
-	public Book() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	public Book(int id, String name, int number_of_pages, int isbn, double rating, int stock_count, Date published_date,
-			String photo, List<Author> authors, Category category, List<BookTransaction> book_transactions) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.number_of_pages = number_of_pages;
-		this.isbn = isbn;
-		this.rating = rating;
-		this.stock_count = stock_count;
-		this.published_date = published_date;
-		this.photo = photo;
-		this.authors = authors;
-		this.category = category;
-		this.book_transactions = book_transactions;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public int getNumber_of_pages() {
-		return number_of_pages;
-	}
-
-	public void setNumber_of_pages(int number_of_pages) {
-		this.number_of_pages = number_of_pages;
-	}
-
-	public int getIsbn() {
-		return isbn;
-	}
-
-	public void setIsbn(int isbn) {
-		this.isbn = isbn;
-	}
-
-	public double getRating() {
-		return rating;
-	}
-
-	public void setRating(double rating) {
-		this.rating = rating;
-	}
-
-	public int getStock_count() {
-		return stock_count;
-	}
-
-	public void setStock_count(int stock_count) {
-		this.stock_count = stock_count;
-	}
-
-	public Date getPublished_date() {
-		return published_date;
-	}
-
-	public void setPublished_date(Date published_date) {
-		this.published_date = published_date;
-	}
-
-	public String getPhoto() {
-		return photo;
-	}
-
-	public void setPhoto(String photo) {
-		this.photo = photo;
-	}
-
-	public List<Author> getAuthors() {
-		return authors;
-	}
-
-	public void setAuthors(List<Author> authors) {
-		this.authors = authors;
-	}
-
-	public Category getCategory() {
-		return category;
-	}
-
-	public void setCategory(Category category) {
-		this.category = category;
-	}
-
-	public List<BookTransaction> getBook_transactions() {
-		return book_transactions;
-	}
-
-	public void setBook_transactions(List<BookTransaction> book_transactions) {
-		this.book_transactions = book_transactions;
-	}
-
+	
 }

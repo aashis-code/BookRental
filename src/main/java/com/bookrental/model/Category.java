@@ -7,13 +7,21 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
+@Table(name="category")
 public class Category {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	@SequenceGenerator(name = "category_gen", allocationSize = 1, sequenceName = "category_seq")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_seq")
+	private Integer id;
 
 	private String name;
 
@@ -22,49 +30,5 @@ public class Category {
 	@OneToMany(mappedBy = "category")
 	private List<Book> books;
 
-	public Category() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	public Category(int id, String name, String description, List<Book> books) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.description = description;
-		this.books = books;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public List<Book> getBooks() {
-		return books;
-	}
-
-	public void setBooks(List<Book> books) {
-		this.books = books;
-	}
-
+	
 }

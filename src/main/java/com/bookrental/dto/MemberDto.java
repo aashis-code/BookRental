@@ -5,13 +5,18 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CategoryDto {
-
+public class MemberDto {
+	
 	private Integer id;
+
+	private String email;
 
 	private String name;
 
-	private String description;
+	private String mobileNo;
+
+	private String address;
 	
 	private Boolean toDelete;
+
 }

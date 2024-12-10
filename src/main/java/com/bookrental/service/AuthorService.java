@@ -7,6 +7,6 @@ import com.bookrental.dto.AuthorDto;
 @Service
 public interface AuthorService {
 	
-	AuthorDto addAuthor(AuthorDto authorDto);
+	boolean authorOperation(AuthorDto authorDto);
 
 }
