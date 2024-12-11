@@ -1,7 +1,8 @@
 package com.bookrental.serviceImpl;
 
+import java.util.List;
+
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bookrental.dto.AuthorDto;
@@ -13,8 +14,11 @@ import com.bookrental.service.AuthorService;
 @Component
 public class AuthorImpl implements AuthorService {
 
-	@Autowired
 	private AuthorRepo authorRepo;
+
+	public AuthorImpl(AuthorRepo authorRepo) {
+		this.authorRepo = authorRepo;
+	}
 
 	@Override
 	public boolean authorOperation(AuthorDto authorDto) {
@@ -36,6 +40,20 @@ public class AuthorImpl implements AuthorService {
 			return true;
 		}
 
+	}
+
+	@Override
+	public Author getAuthorById(Integer authorId) {
+		if(authorId<1) {
+			throw new ResourceNotFoundException("Invalid author Id.", null);
+		}
+		return authorRepo.findById(authorId).orElseThrow(()-> new ResourceNotFoundException("AuthorId", String.valueOf(authorId)));
+	}
+
+	@Override
+	public List<Author> getAllAuthors() {
+
+		return authorRepo.findAll();
 	}
 
 }

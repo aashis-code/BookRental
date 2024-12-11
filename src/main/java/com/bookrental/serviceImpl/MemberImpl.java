@@ -1,5 +1,7 @@
 package com.bookrental.serviceImpl;
 
+import java.util.List;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,6 +42,20 @@ public class MemberImpl implements MemberService {
 			memberRepo.save(member);
 			return true;
 		}
+	}
+
+	@Override
+	public Member getMemberById(Integer memberId) {
+		if(memberId<1) {
+			throw new ResourceNotFoundException("Please, provide valid member ID.", null);
+		}
+		return memberRepo.findById(memberId).orElseThrow(()-> new ResourceNotFoundException("Member Id", String.valueOf(memberId)));
+	}
+
+	@Override
+	public List<Member> getAllMembers() {
+		List<Member> members = memberRepo.findAll();
+		return members;
 	}
 
 }

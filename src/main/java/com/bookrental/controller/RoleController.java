@@ -10,6 +10,8 @@ import com.bookrental.dto.RoleDto;
 import com.bookrental.helper.ResponseObject;
 import com.bookrental.service.RoleService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/role")
 public class RoleController extends BaseController{
@@ -18,7 +20,7 @@ public class RoleController extends BaseController{
 	private RoleService roleService;
 	
 	@PostMapping("/")
-	public ResponseObject roleCUD(@RequestBody RoleDto roleDto) {
+	public ResponseObject roleCUD(@RequestBody @Valid RoleDto roleDto) {
 		boolean result = roleService.roleOperation(roleDto);
 		return getSuccessResponse("Success !!", result);
 	}

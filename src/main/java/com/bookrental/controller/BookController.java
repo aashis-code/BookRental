@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,14 +15,20 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bookrental.dto.BookAddRequest;
 import com.bookrental.helper.ExcelHelper;
 import com.bookrental.helper.ResponseObject;
+import com.bookrental.repository.BookRepo;
 import com.bookrental.service.BookService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/api/book")
-public class BookController {
+public class BookController extends BaseController{
 
-	@Autowired
-	private BookService bookService;
+	private final BookService bookService;
+	
+	public BookController(BookService bookService) {
+		this.bookService=bookService;
+	}
 
 	@PostMapping("/upload-excel")
 	public ResponseObject uploadBooksFromExcel(@RequestParam("file") MultipartFile file) {
@@ -40,14 +47,20 @@ public class BookController {
 	}
 
 	@PostMapping("/")
-	public ResponseObject uploadBooksFromJson(@RequestBody List<BookAddRequest> bookAddRequests) {
-		bookService.addBooks(bookAddRequests);
-		return new ResponseObject(true, "Books successfully added !", null);
+	public ResponseObject uploadBooksFromJson(@RequestBody @Valid List<BookAddRequest> bookAddRequests) {
+		
+		return getSuccessResponse( "Books successfully added !", bookService.bookCUDOperation(bookAddRequests));
 	}
 
 	@GetMapping("/")
 	public ResponseObject getAllBooks() {
-		return new ResponseObject(true, "Fetched successfully", bookService.getAllBooks());
+		
+		return getSuccessResponse("Success !!", bookService.getAllBooks());
+	}
+	
+	@GetMapping("/{bookId}")
+	public ResponseObject getBookById(@PathVariable Integer bookId) {
+		return getSuccessResponse("Success !!", bookService.getBookById(bookId));
 	}
 
 }

@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bookrental.dto.BookTransactionDto;
 import com.bookrental.exceptions.ResourceAlreadyExist;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.RentType;
@@ -21,56 +22,59 @@ import com.bookrental.service.BookTransactionService;
 @Component
 public class BookTransactionImpl implements BookTransactionService {
 
-	@Autowired
-	private BookRepo bookRepo;
+	private final BookRepo bookRepo;
 
-	@Autowired
-	private MemberRepo memberRepo;
+	private final MemberRepo memberRepo;
 
-	@Autowired
-	private BookTransactionRepo bookTransactionRepo;
+	private final BookTransactionRepo bookTransactionRepo;
 
-//	Renting book
+	public BookTransactionImpl(BookRepo bookRepo, MemberRepo memberRepo, BookTransactionRepo bookTransactionRepo) {
+		this.bookRepo = bookRepo;
+		this.memberRepo = memberRepo;
+		this.bookTransactionRepo = bookTransactionRepo;
+	}
+
+//	Renting book Operation
 	@Override
-	public boolean bookRentOperation(Integer memberId, Integer bookId, Boolean returnBook) {
+	public boolean bookRentCUD(BookTransactionDto bookTransactionDto) {
 
-		Member member = memberRepo.findById(memberId)
-				.orElseThrow(() -> new ResourceNotFoundException("Member", String.valueOf(memberId)));
-		
-		List<BookTransaction> rentedBooks = bookTransactionRepo.findByMemberAndRentStatus(member, RentType.RENT);
-		
-		Book book = bookRepo.findById(bookId)
-				.orElseThrow(() -> new ResourceNotFoundException("BookId", String.valueOf(bookId)));
+		Member member = memberRepo.findById(bookTransactionDto.getMemberId()).orElseThrow(
+				() -> new ResourceNotFoundException("Member", String.valueOf(bookTransactionDto.getMemberId())));
 
-		
-		if (!rentedBooks.isEmpty()) {
-			
-			if(Boolean.TRUE.equals(returnBook)) {
-				BookTransaction bookTran = rentedBooks.get(0);
-				bookTran.setRentStatus(RentType.RETURN);
-				bookTran.setActiveClosed(false);
-				
-				bookRepo.bookStockIncrement(bookId);
-				bookTransactionRepo.save(bookTran);
+		BookTransaction rentedBook = bookTransactionRepo.findByMemberAndRentStatus(member, RentType.RENT);
+
+		Book book = bookRepo.findById(bookTransactionDto.getBookId()).orElseThrow(
+				() -> new ResourceNotFoundException("BookId", String.valueOf(bookTransactionDto.getBookId())));
+
+		if (rentedBook != null) {
+
+			if (Boolean.TRUE.equals(bookTransactionDto.getToReturn())) {
+				rentedBook.setRentStatus(RentType.RETURN);
+				rentedBook.setActiveClosed(false);
+
+				bookRepo.bookStockIncrement(bookTransactionDto.getBookId());
+				bookTransactionRepo.save(rentedBook);
+				return true;
+			} else {
+				BookTransaction tranBook = bookTransactionRepo.findById(bookTransactionDto.getId())
+						.orElseThrow(() -> new ResourceNotFoundException("TransactionId",
+								String.valueOf(bookTransactionDto.getId())));
+				rentedBook.setBook(book);
+				bookTransactionRepo.save(tranBook);
 				return true;
 			}
-			
-			throw new ResourceAlreadyExist("Rented Book", String.valueOf(bookId));
-
 		}
 
-
-		int value = bookRepo.bookStockDecrement(bookId);
+		int value = bookRepo.bookStockDecrement(bookTransactionDto.getBookId());
 		if (value < 1) {
-			return false;
+			throw new ResourceNotFoundException("Book is out of stock.", null);
 		}
-		BookTransaction bookTransaction = BookTransaction.builder().code(UUID.randomUUID().toString()).fromDate(LocalDate.now())
-				.toDate(LocalDate.now().plusDays(6)).rentStatus(RentType.RENT).activeClosed(true).member(member)
-				.book(book).build();
+
+		BookTransaction bookTransaction = BookTransaction.builder().code(UUID.randomUUID().toString())
+				.fromDate(LocalDate.now()).toDate(LocalDate.now().plusDays(bookTransactionDto.getRentDuration()))
+				.rentStatus(RentType.RENT).activeClosed(true).member(member).book(book).build();
 		bookTransactionRepo.save(bookTransaction);
 		return true;
 	}
-
-	
 
 }

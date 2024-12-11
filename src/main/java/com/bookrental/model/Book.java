@@ -3,6 +3,8 @@ package com.bookrental.model;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -53,10 +55,12 @@ public class Book {
 			name="book_author",
 			joinColumns = @JoinColumn(name="book_id", foreignKey = @ForeignKey(name="FK_book_author_book")),
 			inverseJoinColumns = @JoinColumn(name="author_id", foreignKey = @ForeignKey(name = "FK_book_author_author")))
+	@JsonManagedReference
 	private List<Author> authors;
 
 	@ManyToOne
 	@JoinColumn(name = "categoryId", foreignKey = @ForeignKey(name="FK_book_category"))
+	@JsonManagedReference
 	private Category category;
 
 	@OneToMany(mappedBy = "book")

@@ -23,20 +23,23 @@ import com.bookrental.service.BookService;
 @Component
 public class BookImpl implements BookService {
 
-	@Autowired
-	private BookModelMapper bookModelMapper;
+	private final BookModelMapper bookModelMapper;
 
-	@Autowired
-	private AuthorRepo authorRepo;
+	private final AuthorRepo authorRepo;
 
-	@Autowired
-	private CategoryRepo categoryRepo;
+	private final CategoryRepo categoryRepo;
 
-	@Autowired
-	private BookRepo bookRepo;
+	private final BookRepo bookRepo;
+	
+	public BookImpl(BookModelMapper bookModelMapper, AuthorRepo authorRepo, CategoryRepo categoryRepo, BookRepo bookRepo) {
+		this.bookModelMapper=bookModelMapper;
+		this.authorRepo=authorRepo;
+		this.categoryRepo=categoryRepo;
+		this.bookRepo=bookRepo;
+	}
 
 	@Override
-	public boolean addBooks(List<BookAddRequest> bookAddRequests) {
+	public boolean bookCUDOperation(List<BookAddRequest> bookAddRequests) {
 		List<Book> books = new ArrayList<Book>();
 		for (BookAddRequest bookAddRequest : bookAddRequests) {
 			int categoryId = bookAddRequest.getCategoryId();
@@ -79,6 +82,14 @@ public class BookImpl implements BookService {
 			bookAddRequest.add(bookAdd);
 		}
 		return bookAddRequest;
+	}
+	
+	public Book getBookById(Integer bookId) {
+		if(bookId<1) {
+			throw new ResourceNotFoundException("Enter valid book Id.", null);
+		}
+		
+		return bookRepo.findById(bookId).orElseThrow(()-> new ResourceNotFoundException("BookId", String.valueOf(bookId)));
 	}
 
 }

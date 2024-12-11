@@ -1,12 +1,13 @@
 package com.bookrental.serviceImpl;
 
-import java.util.Optional;
+import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bookrental.dto.CategoryDto;
 import com.bookrental.exceptions.ResourceAlreadyExist;
+import com.bookrental.exceptions.ResourceNotFoundException;
+import com.bookrental.helper.CoustomBeanUtils;
 import com.bookrental.model.Category;
 import com.bookrental.modelmapper.CategoryModelMapper;
 import com.bookrental.repository.CategoryRepo;
@@ -15,25 +16,45 @@ import com.bookrental.service.CategoryService;
 @Component
 public class CategoryImpl implements CategoryService {
 
-	@Autowired
-	private CategoryRepo categoryRepo;
+	private final CategoryRepo categoryRepo;
 
-	@Autowired
-	private CategoryModelMapper categoryModelMapper;
+
+	public CategoryImpl(CategoryRepo categoryRepo) {
+		this.categoryRepo = categoryRepo;
+	}
 
 	@Override
-	public CategoryDto addCategory(CategoryDto categoryDto) {
-		if(categoryDto.getId() != null) {
-			Optional<Category> category = categoryRepo.findById(categoryDto.getId());
-			if (category.isPresent()) {
-				throw new ResourceAlreadyExist("Id", String.valueOf(categoryDto.getId()));
+	public boolean categoryCUD(CategoryDto categoryDto) {
+		if (categoryDto.getId() != null) {
+			Category category = categoryRepo.findById(categoryDto.getId()).orElseThrow(
+					() -> new ResourceNotFoundException("CategoryId", String.valueOf(categoryDto.getId())));
+			if (Boolean.TRUE.equals(categoryDto.getToDelete())) {
+				categoryRepo.delete(category);
+				return true;
 			}
+			CoustomBeanUtils.copyNonNullProperties(categoryDto, category);
+			categoryRepo.save(category);
+			return true;
+		} else {
+			Category category = new Category();
+			CoustomBeanUtils.copyNonNullProperties(categoryDto, category);
+			categoryRepo.save(category);
+			return true;
 		}
-		
-		Category categoryValue = categoryModelMapper.categorDtoToCategory(categoryDto);
-		Category savedCategory = categoryRepo.save(categoryValue);
+	}
 
-		return categoryModelMapper.categoryToCategoryDto(savedCategory);
+	@Override
+	public Category getCategoryById(Integer categoryId) {
+		if(categoryId <1) {
+			throw new ResourceNotFoundException("Please, Enter valid Category Id.", null);
+		}		
+		return categoryRepo.findById(categoryId)
+				           .orElseThrow(()-> new ResourceNotFoundException("CategoryId", String.valueOf(categoryId)));
+	}
+
+	@Override
+	public List<Category> getAllCategory() {		
+		return categoryRepo.findAll();
 	}
 
 }

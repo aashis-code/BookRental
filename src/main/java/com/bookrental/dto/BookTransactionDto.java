@@ -1,9 +1,10 @@
 package com.bookrental.dto;
 
-import java.time.LocalDate;
+import org.springframework.beans.factory.annotation.Value;
 
-import com.bookrental.helper.RentType;
-
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,14 +14,18 @@ public class BookTransactionDto {
 
 	private Integer id;
 
-	private String code;
+	@NotNull(message = "Enter member Id.")
+	@Min(value = 1, message = "Enter valid member Id.")
+	private Integer memberId;
 
-	private LocalDate fromDate;
+	@NotNull(message = "Enter book Id.")
+	@Min(value = 1, message = "Enter valid book Id.")
+	private Integer bookId;
 
-	private LocalDate toDate;
-
-	private RentType rentStatus;
+	@Size(min = 1, message = "Rent duration must be at least 1 day long.")
+	private Integer rentDuration;
 	
+	@Value("${false}")
 	private Boolean toReturn;
 
 }

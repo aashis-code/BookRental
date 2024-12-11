@@ -23,7 +23,7 @@ public class MemberDetails implements UserDetails {
 	public MemberDetails(Member member) {
 		this.username = member.getEmail();
 		this.password = member.getPassword();
-		this.authorities = member.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName()))
+		this.authorities = member.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_"+role.getName()))
 				.collect(Collectors.toList());
 	}
 

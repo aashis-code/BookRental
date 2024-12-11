@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.bookrental.security.JwtAuthenticationFilter;
 import com.bookrental.security.MemberDetailsService;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -35,6 +36,7 @@ public class SecurityConfiguration {
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers("/auth/**", "/api/member/**").permitAll()
 						.anyRequest().authenticated())
+//						.anyRequest().permitAll())
 				.authenticationProvider(authenticationProvider())
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();

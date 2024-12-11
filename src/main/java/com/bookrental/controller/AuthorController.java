@@ -1,6 +1,7 @@
 package com.bookrental.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,14 +13,30 @@ import com.bookrental.service.AuthorService;
 
 @RestController
 @RequestMapping(path = "/api/author")
-public class AuthorController {
+public class AuthorController extends BaseController {
 
-	@Autowired
-	private AuthorService authorService;
+	private final AuthorService authorService;
 
-	@PostMapping(value = "/create")
-	public ResponseObject createAuthor(@RequestBody AuthorDto authorDto) {
-		boolean result = authorService.authorOperation(authorDto);
-		return new ResponseObject(true, "Operation success !!", result);
+	public AuthorController(AuthorService authorService) {
+		this.authorService = authorService;
 	}
+
+	@PostMapping("/create")
+	public ResponseObject createAuthor(@RequestBody AuthorDto authorDto) {
+
+		return getSuccessResponse("Success !!", authorService.authorOperation(authorDto));
+	}
+
+	@GetMapping("/{authorId}")
+	public ResponseObject getAuthorById(@PathVariable Integer authorId) {
+
+		return getSuccessResponse("Success !!", authorService.getAuthorById(authorId));
+	}
+
+	@GetMapping("/")
+	public ResponseObject getAllAuthors() {
+
+		return getSuccessResponse("Success !!", authorService.getAllAuthors());
+	}
+
 }
