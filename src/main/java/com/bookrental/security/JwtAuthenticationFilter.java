@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,26 +29,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			HandlerExceptionResolver handlerExceptionResolver) {
 		this.jwtService = jwtService;
 		this.userDetailsService = userDetailsService;
-//		this.handlerExceptionResolver = handlerExceptionResolver;
 	}
 
 	@Override
 	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
 			@NonNull FilterChain filterChain) throws ServletException, IOException {
+
 		String authHeader = request.getHeader("Authorization");
 
-		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-			filterChain.doFilter(request, response);
-			return;
-		}
+		if (authHeader != null && authHeader.startsWith("Bearer")) {
 
-		try {
 			final String jwt = authHeader.substring(7);
 			final String userEmail = jwtService.extractUsername(jwt);
 
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-			if (userEmail != null && authentication == null) {
+			if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 				UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
 				if (jwtService.isTokenValid(jwt, userDetails)) {
@@ -60,12 +53,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 					SecurityContextHolder.getContext().setAuthentication(authToken);
 				}
 			}
-
-			filterChain.doFilter(request, response);
-		} catch (Exception exception) {
-//			handlerExceptionResolver.resolveException(request, response, null, exception);
-			exception.printStackTrace();
 		}
+		filterChain.doFilter(request, response);
 	}
 
 }

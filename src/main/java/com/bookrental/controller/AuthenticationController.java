@@ -31,13 +31,6 @@ public class AuthenticationController {
 		this.memberRepo = memberRepo;
 	}
 
-////    Registering User
-//    @PostMapping("/signup")
-//    public ResponseEntity<User> register(@RequestBody RegisterUserDto registerUserDto) {
-//        User registeredUser = authenticationService.signup(registerUserDto);
-//
-//        return ResponseEntity.ok(registeredUser);
-//    }
 
 //    Log In user
 	@PostMapping("/login")

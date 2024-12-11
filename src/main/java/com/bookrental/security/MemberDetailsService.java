@@ -1,11 +1,12 @@
-package com.bookrental.service;
+package com.bookrental.security;
 
-
-import com.bookrental.exceptions.ResourceNotFoundException;
-import com.bookrental.repository.MemberRepo;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+
+import com.bookrental.exceptions.ResourceNotFoundException;
+import com.bookrental.model.Member;
+import com.bookrental.repository.MemberRepo;
 
 @Component
 public class MemberDetailsService implements UserDetailsService {
@@ -16,9 +17,10 @@ public class MemberDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws ResourceNotFoundException {
-        return memberRepo.findByEmail(username)
+    public UserDetails loadUserByUsername(String username) {
+         Member member = memberRepo.findByEmail(username)
                 .orElseThrow(() -> new ResourceNotFoundException("Email", username));
+         
+         return new MemberDetails(member);
     }
 }
-

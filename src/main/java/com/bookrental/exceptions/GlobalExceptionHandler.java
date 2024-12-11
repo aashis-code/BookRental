@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.bookrental.helper.ResponseObject;
+
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -22,5 +24,11 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<Map<String, String>> resourceAlreadyExistException(ResourceAlreadyExist ex){
 		String message = ex.getMessage();
 		return new ResponseEntity<>(Map.of("message", message), HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(UnAuthorizedException.class)
+	public ResponseObject unAuthorizedException(UnAuthorizedException ex) {
+		String message = ex.getMessage();
+		return new ResponseObject(false, "Unauthorization", message);
 	}
 }

@@ -46,10 +46,6 @@ public class Application {
 		return new BookModelMapper();
 	}
 	
-//	BEAN FOR JWT SECURITY
-
-
-
 	@Bean
 	public MemberModelMapper memberModelMapper() {
 		return new MemberModelMapper();
