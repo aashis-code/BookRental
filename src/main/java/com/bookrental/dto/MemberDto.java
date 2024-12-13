@@ -1,5 +1,6 @@
 package com.bookrental.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -24,7 +25,8 @@ public class MemberDto {
 	private String mobileNo;
 
 	private String address;
-	
+
+	@JsonIgnore
 	private Boolean toDelete;
 
 }

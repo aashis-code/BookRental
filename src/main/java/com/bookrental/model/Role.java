@@ -2,6 +2,9 @@ package com.bookrental.model;
 
 import java.util.List;
 
+import com.bookrental.audit.Auditable;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,15 +23,17 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name="role")
-public class Role {
+public class Role extends Auditable  {
 	
 	@Id
-	@SequenceGenerator(name = "role_gen", allocationSize = 1, sequenceName = "role_seq")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role_seq")
+	@SequenceGenerator(name = "role_seq_gen", allocationSize = 1, sequenceName = "role_seq")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role_seq_gen")
 	private Integer id;
 	
+	@Column(name = "name")
 	private String name;
 	
+	@Column(name = "description")
 	private String description;
 	
 	@ManyToMany(mappedBy = "roles")

@@ -1,5 +1,7 @@
 package com.bookrental.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -17,9 +19,10 @@ public class AuthorDto {
 	@Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Enter valid email address.")
 	private String email;
 
-	@Size(min = 10, max = 10, message = "Phone number must consist 10 digits.")
+	@Pattern(regexp = "^[0-9]{10}$", message = "Enter valid number.")
 	private String mobileNumber;
-	
+
+	@JsonIgnore
 	private Boolean toDelete;
 
 }

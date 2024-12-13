@@ -15,5 +15,7 @@ public interface AuthorService {
 	Author getAuthorById(Integer authorId);
 	
 	List<Author> getAllAuthors();
+	
+	boolean deleteAuthor(Integer authorId);
 
 }

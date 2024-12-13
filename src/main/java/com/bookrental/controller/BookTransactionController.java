@@ -1,5 +1,6 @@
 package com.bookrental.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,19 +13,15 @@ import com.bookrental.service.BookTransactionService;
 
 import jakarta.validation.Valid;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/api/book-transaction")
 public class BookTransactionController extends BaseController {
 
-	private BookTransactionService bookTransactionService;
-
-	public BookTransactionController(BookTransactionService bookTransactionService) {
-		this.bookTransactionService = bookTransactionService;
-	}
+	private final BookTransactionService bookTransactionService;
 
 	@PostMapping("/")
 	public ResponseObject rentBookByMember(@RequestBody @Valid BookTransactionDto bookTransactionDto) {
-		return new ResponseObject(true, "Successffully rented the book",
-				bookTransactionService.bookRentCUD(bookTransactionDto));
+		return getSuccessResponse("Success !!", bookTransactionService.bookRentCreateAndUpdate(bookTransactionDto));
 	}
 }

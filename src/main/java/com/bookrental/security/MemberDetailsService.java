@@ -10,6 +10,7 @@ import com.bookrental.repository.MemberRepo;
 
 @Component
 public class MemberDetailsService implements UserDetailsService {
+	
     private final MemberRepo memberRepo;
 
     public MemberDetailsService(MemberRepo memberRepo) {

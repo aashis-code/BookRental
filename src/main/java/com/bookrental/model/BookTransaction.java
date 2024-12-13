@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import com.bookrental.helper.RentType;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -31,19 +32,24 @@ import lombok.Setter;
 public class BookTransaction {
 
 	@Id
-	@SequenceGenerator(name = "bookTransaction_gen", allocationSize = 1, sequenceName = "bookTransaction_seq")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bookTransaction_seq")
+	@SequenceGenerator(name = "bookTransaction_seq_gen", allocationSize = 1, sequenceName = "bookTransaction_seq")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bookTransaction_seq_gen")
 	private Integer id;
 
+	@Column(name = "code")
 	private String code;
 
+	@Column(name = "from_date")
 	private LocalDate fromDate;
 
+	@Column(name = "to_date")
 	private LocalDate toDate;
 
 	@Enumerated(EnumType.STRING)
+	@Column(name = "rent_status")
 	private RentType rentStatus;
 
+	@Column(name = "active_close")
 	private Boolean activeClosed;
 
 	@ManyToOne

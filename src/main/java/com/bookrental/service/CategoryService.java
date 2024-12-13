@@ -11,10 +11,12 @@ import com.bookrental.model.Category;
 @Service
 public interface CategoryService {
 	
-	boolean categoryCUD(CategoryDto categoryDto);
+	boolean categorySaveAndUpdate(CategoryDto categoryDto);
 	
 	Category getCategoryById(Integer categoryId);
 	
 	List<Category> getAllCategory();
+	
+	boolean deleteCategoryById(Integer bookId);
 
 }

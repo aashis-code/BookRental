@@ -13,14 +13,16 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.bookrental.helper.ResponseObject;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 	
 	//Validation Field Exception Handling
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseObject methodArgumentValidException(MethodArgumentNotValidException ex){
+	public ResponseEntity<Object> methodArgumentValidException(MethodArgumentNotValidException ex){
 		Map<String, List<String>> errorHashMap = new HashMap<>();
 		
 		ex.getBindingResult().getAllErrors().forEach(error -> {
@@ -36,9 +38,14 @@ public class GlobalExceptionHandler {
 				errorHashMap.put(field, errorMessages);
 			}
 		});
-		return new ResponseObject(false,"Validation errors.",errorHashMap);
+		return new ResponseEntity<>(new ResponseObject(false,"Validation errors.",errorHashMap), HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public ResponseEntity<ResponseObject> methodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+		String message = ex.getValue().toString();
+		return new ResponseEntity<ResponseObject>(new ResponseObject(false,String.format("%s is invalid.", message), null), HttpStatus.BAD_REQUEST);
+	}
 	
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<Map<String, String>> resourceNotFoundException(ResourceNotFoundException ex){

@@ -1,8 +1,15 @@
 package com.bookrental.controller;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bookrental.dto.BookAddRequest;
+import com.bookrental.dto.ListOfBookRequest;
 import com.bookrental.helper.ExcelHelper;
 import com.bookrental.helper.ResponseObject;
 import com.bookrental.repository.BookRepo;
@@ -47,20 +55,31 @@ public class BookController extends BaseController{
 	}
 
 	@PostMapping("/")
-	public ResponseObject uploadBooksFromJson(@RequestBody @Valid List<BookAddRequest> bookAddRequests) {
+	public ResponseObject uploadBooksFromJson(@RequestBody @Valid ListOfBookRequest bookAddRequests) {
 		
-		return getSuccessResponse( "Books successfully added !", bookService.bookCUDOperation(bookAddRequests));
+		return getSuccessResponse( "Books successfully added !", bookService.bookSaveAndUpdate(bookAddRequests));
 	}
 
 	@GetMapping("/")
 	public ResponseObject getAllBooks() {
-		
-		return getSuccessResponse("Success !!", bookService.getAllBooks());
+		return getSuccessResponse("Successfully fetched all books !!", bookService.getAllBooks());
 	}
 	
 	@GetMapping("/{bookId}")
 	public ResponseObject getBookById(@PathVariable Integer bookId) {
-		return getSuccessResponse("Success !!", bookService.getBookById(bookId));
+		return getSuccessResponse("Successfully fetch book by bookId !!", bookService.getBookById(bookId));
+	}
+	
+	@DeleteMapping("/{bookId}")
+	public ResponseObject deleteBookById(@PathVariable Integer bookId) {
+		return getSuccessResponse("Success !!", bookService.deleteBook(bookId));
+	}
+
+	@GetMapping("/excel")
+	public ResponseEntity<Resource> exportExcel() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Disposition", "attachment; filename=books.xls");
+		return ResponseEntity.ok().headers(headers).contentType(MediaType.parseMediaType("application/vnd.ms-excel")).body(new InputStreamResource(bookService.getBookOnExcel()));
 	}
 
 }

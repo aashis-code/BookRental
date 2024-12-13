@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,17 +19,20 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name="author")
-public class Author {
+public class Author extends BaseEntityDelete  {
 
 	@Id
-	@SequenceGenerator(name= "author_gen", allocationSize = 1, sequenceName = "author_seq")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "author_seq")
+	@SequenceGenerator(name= "author_seq_gen", allocationSize = 1, sequenceName = "author_seq")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "author_seq_gen")
 	private int id;
 
+	@Column(name = "name")
 	private String name;
 
+	@Column(name = "email")
 	private String email;
 
+	@Column(name = "mobile_number")
 	private String mobileNumber;
 
 	@ManyToMany(mappedBy = "authors")

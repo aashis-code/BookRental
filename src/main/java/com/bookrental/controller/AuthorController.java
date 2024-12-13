@@ -1,5 +1,6 @@
 package com.bookrental.controller;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bookrental.dto.AuthorDto;
 import com.bookrental.helper.ResponseObject;
 import com.bookrental.service.AuthorService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/api/author")
@@ -22,7 +25,7 @@ public class AuthorController extends BaseController {
 	}
 
 	@PostMapping("/create")
-	public ResponseObject createAuthor(@RequestBody AuthorDto authorDto) {
+	public ResponseObject createAuthor(@RequestBody @Valid AuthorDto authorDto) {
 
 		return getSuccessResponse("Success !!", authorService.authorOperation(authorDto));
 	}
@@ -37,6 +40,11 @@ public class AuthorController extends BaseController {
 	public ResponseObject getAllAuthors() {
 
 		return getSuccessResponse("Success !!", authorService.getAllAuthors());
+	}
+
+	@DeleteMapping("/{deleteId}")
+	public ResponseObject deleteAuthor(@PathVariable Integer authorId) {
+		return getSuccessResponse("Success !!", authorService.deleteAuthor(authorId));
 	}
 
 }
