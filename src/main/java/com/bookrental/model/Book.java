@@ -1,28 +1,12 @@
 package com.bookrental.model;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
-
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
-
+import com.bookrental.audit.Auditable;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,8 +17,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "book", uniqueConstraints = { @UniqueConstraint(columnNames = { "isbn" }) })
-public class Book extends BaseEntityDelete {
+@Table(name = "book", uniqueConstraints = { @UniqueConstraint(name = "uk_book_isbn", columnNames = { "isbn" }) })
+public class Book extends Auditable {
 
 	@Id
 	@SequenceGenerator(name = "book_seq_gen", allocationSize = 1, sequenceName = "book_seq")
@@ -73,6 +57,8 @@ public class Book extends BaseEntityDelete {
 	private Category category;
 
 	@OneToMany(mappedBy = "book")
+	@JsonBackReference
 	private List<BookTransaction> bookTransactions;
+	
 
 }

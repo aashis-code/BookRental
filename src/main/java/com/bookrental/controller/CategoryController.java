@@ -1,6 +1,7 @@
 package com.bookrental.controller;
 
 import com.bookrental.dto.CategoryDto;
+import com.bookrental.dto.FilterRequest;
 import com.bookrental.helper.ResponseObject;
 import com.bookrental.service.CategoryService;
 import jakarta.validation.Valid;
@@ -30,10 +31,16 @@ public class CategoryController extends BaseController{
 	public ResponseObject getAllCategories() {
 		return getSuccessResponse("Successfully fetched all categories !!", categoryService.getAllCategory());
 	}
+	
+	@GetMapping("/paginated")
+	public ResponseObject getPagenatedCategories(@RequestBody FilterRequest filterRequest) {
+		return getSuccessResponse("Successfully fetched paginated data.", categoryService.getPaginatedCategoryList(filterRequest));
+	}
 
 	@DeleteMapping("/{categoryId}")
 	public ResponseObject deleteRoleId(@PathVariable Integer categoryId) {
-		return getSuccessResponse("Successfully deleted member !!", categoryService.deleteCategoryById(categoryId));
+		categoryService.deleteCategoryById(categoryId);
+		return getSuccessResponse("Successfully deleted category !!", true);
 	}
 
 }

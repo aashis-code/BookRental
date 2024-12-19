@@ -2,8 +2,12 @@ package com.bookrental.model;
 
 import java.util.List;
 
+import com.bookrental.audit.Auditable;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,8 +29,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "member", uniqueConstraints = { @UniqueConstraint(columnNames = { "email" }) })
-public class Member extends BaseEntityDelete  {
+@Table(name = "member", uniqueConstraints = { @UniqueConstraint(name="uk_member_email", columnNames = { "email"}),
+                                              @UniqueConstraint(name="uk_member_mobile_number", columnNames = { "mobile_number"})})
+public class Member extends Auditable  {
 
 	@Id
 	@SequenceGenerator(name = "member_seq_gen", allocationSize = 1, sequenceName = "member_seq")
@@ -49,9 +54,10 @@ public class Member extends BaseEntityDelete  {
 	private String password;
 
 	@OneToMany(mappedBy = "member")
+	@JsonBackReference
 	private List<BookTransaction> bookTransactions;
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "member_role", joinColumns = @JoinColumn(name = "memberId", foreignKey = @ForeignKey(name = "FK_member_role_member")), inverseJoinColumns = @JoinColumn(name = "roleId", foreignKey = @ForeignKey(name = "FK_member_role_role")))
 	private List<Role> roles;
 }

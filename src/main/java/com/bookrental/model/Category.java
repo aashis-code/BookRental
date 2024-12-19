@@ -2,6 +2,7 @@ package com.bookrental.model;
 
 import java.util.List;
 
+import com.bookrental.audit.Auditable;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
@@ -20,8 +21,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "category", uniqueConstraints = { @UniqueConstraint(columnNames = { "name" }) })
-public class Category extends BaseEntityDelete {
+@Table(name = "category", uniqueConstraints = { @UniqueConstraint(name= "uk_category_name", columnNames = { "name" }) })
+public class Category extends Auditable {
 
 	@Id
 	@SequenceGenerator(name = "category_seq_gen", allocationSize = 1, sequenceName = "category_seq")

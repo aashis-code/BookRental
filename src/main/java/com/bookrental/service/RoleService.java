@@ -1,11 +1,9 @@
 package com.bookrental.service;
 
-import com.bookrental.model.Role;
-import org.springframework.stereotype.Service;
+import java.util.List;
 
 import com.bookrental.dto.RoleDto;
-
-import java.util.List;
+import com.bookrental.model.Role;
 
 public interface RoleService {
 
@@ -15,6 +13,8 @@ public interface RoleService {
 
 	List<Role> getAllRoles();
 
-	boolean roleDelete(int roleId);
+	List<Role> getPaginatedRoleList(Integer pageNo, Integer pageSize);
+
+	void roleDelete(int roleId);
 
 }

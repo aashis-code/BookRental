@@ -5,17 +5,24 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.bookrental.dto.AuthorDto;
+import com.bookrental.dto.FilterRequest;
+import com.bookrental.dto.PaginatedResponse;
 import com.bookrental.model.Author;
+import com.bookrental.model.Book;
 
 @Service
 public interface AuthorService {
 	
-	boolean authorOperation(AuthorDto authorDto);
+	boolean saveAndUpdateAuthor(AuthorDto authorDto);
 	
 	Author getAuthorById(Integer authorId);
 	
 	List<Author> getAllAuthors();
 	
-	boolean deleteAuthor(Integer authorId);
-
+	void deleteAuthor(Integer authorId);
+	
+	PaginatedResponse getPaginatedAuthorList(FilterRequest filterRequest);
+	
+	
+	
 }

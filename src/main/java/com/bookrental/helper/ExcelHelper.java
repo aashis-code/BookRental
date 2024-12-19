@@ -1,6 +1,8 @@
 package com.bookrental.helper;
 
 import com.bookrental.dto.BookAddRequest;
+import com.bookrental.dto.BookResponse;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -12,32 +14,23 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class ExcelHelper {
 
 
     public static boolean isExcelFile(MultipartFile file) {
-//        String contentType = file.getContentType();
         String fileName = file.getOriginalFilename();
-
         return fileName != null && (fileName.endsWith(".xls") || fileName.endsWith(".xlsm"));
-//        return contentType.equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") ||
-//               contentType.equals("application/vnd.ms-excel");
     }
 
     //    Read excel data
     public static List<BookAddRequest> readExcelFile(MultipartFile file) throws IOException {
 
         List<BookAddRequest> bookAddRequests = new ArrayList<>();
-
         InputStream inputStream = file.getInputStream();
-
         Workbook workbook = new XSSFWorkbook(inputStream);
-
         Sheet sheet = workbook.getSheetAt(0);
-
         Iterator<Row> rowIterator = sheet.iterator();
 
         if (rowIterator.hasNext()) {
@@ -57,7 +50,7 @@ public class ExcelHelper {
             bookAddRequest.setRating(Double.parseDouble(getCellValue(row.getCell(3))));
             bookAddRequest.setStockCount(Integer.parseInt(getCellValue(row.getCell(4))));
 //			bookAddRequest.setPublishedDate(java.sql.Date.valueOf(getCellValue(row.getCell(5))));
-            bookAddRequest.setPhoto(getCellValue(row.getCell(6)));
+//            bookAddRequest.setPhoto(getCellValue(row.getCell(6)));
 
 
             String authorIdsCell = getCellValue(row.getCell(7));
@@ -104,7 +97,7 @@ public class ExcelHelper {
     }
 
     //	Export data in excel format
-    public static ByteArrayInputStream exportToExcel(List<BookAddRequest> bookAddRequests) throws IOException {
+    public static ByteArrayInputStream exportToExcel(List<BookResponse> bookResponse) throws IOException {
         // Step 1: Create a new workbook
         Workbook workbook = new XSSFWorkbook();
 
@@ -115,7 +108,7 @@ public class ExcelHelper {
 
         // Step 3: Create the header row
         Row headerRow = sheet.createRow(0);
-        String[] headers = {"ID", "Name", "NoOfPages", "ISBN", "Rating", "StockCount", "PublisedDate", "Photo", "AuthorIDs", "CategoryId"};
+        String[] headers = {"ID", "Name", "NoOfPages", "ISBN", "Rating", "StockCount", "PublisedDate", "Photo", "Author Name", "Category Name"};
         for (int i = 0; i < headers.length; i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(headers[i]);
@@ -123,7 +116,7 @@ public class ExcelHelper {
 
         // Step 4: Populate the rows with user data
         int rowNum = 1;
-        for (BookAddRequest book : bookAddRequests) {
+        for (BookResponse book : bookResponse) {
             Row row = sheet.createRow(rowNum++);
 
             row.createCell(0).setCellValue(book.getId() != null ? book.getId() : 0);
@@ -132,13 +125,10 @@ public class ExcelHelper {
             row.createCell(3).setCellValue(book.getIsbn() != null ? book.getIsbn() : "");
             row.createCell(4).setCellValue(book.getRating() != null ? book.getRating() : 0);
             row.createCell(5).setCellValue(book.getStockCount() != null ? book.getStockCount() : 0);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            row.createCell(6).setCellValue(book.getPublishedDate() != null ? book.getPublishedDate().format(formatter) : "");
+            row.createCell(6).setCellValue(book.getPublishedDate() != null ? book.getPublishedDate(): null);
             row.createCell(7).setCellValue(book.getPhoto() != null ? book.getPhoto() : "");
-            row.createCell(8).setCellValue(book.getAuthorId() != null ? String.join(",", book.getAuthorId().stream().map(String::valueOf).toList()) : "");
-            row.createCell(9).setCellValue(book.getCategoryId() != null ? book.getCategoryId() : 0);
-
-
+            row.createCell(8).setCellValue(book.getAuthorNames() != null ? String.join(",", book.getAuthorNames().stream().map(String::valueOf).toList()) : "");
+            row.createCell(9).setCellValue(book.getCategoryName() != null ? book.getCategoryName() : "");
         }
 
         // Step 5: Write the workbook to stream

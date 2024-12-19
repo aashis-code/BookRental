@@ -6,16 +6,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bookrental.dto.AuthorDto;
+import com.bookrental.dto.FilterRequest;
 import com.bookrental.helper.ResponseObject;
 import com.bookrental.service.AuthorService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/api/author")
+@SecurityRequirement(name="bookRental")
 public class AuthorController extends BaseController {
 
 	private final AuthorService authorService;
@@ -25,9 +29,9 @@ public class AuthorController extends BaseController {
 	}
 
 	@PostMapping("/create")
-	public ResponseObject createAuthor(@RequestBody @Valid AuthorDto authorDto) {
+	public ResponseObject createAndUpdateAuthor(@RequestBody @Valid AuthorDto authorDto) {
 
-		return getSuccessResponse("Success !!", authorService.authorOperation(authorDto));
+		return getSuccessResponse("Success !!", authorService.saveAndUpdateAuthor(authorDto));
 	}
 
 	@GetMapping("/{authorId}")
@@ -41,10 +45,17 @@ public class AuthorController extends BaseController {
 
 		return getSuccessResponse("Success !!", authorService.getAllAuthors());
 	}
+	
+	@GetMapping("/paginated")
+	public ResponseObject getPagenatedAuthors(@RequestBody FilterRequest filterRequest) {
+		return getSuccessResponse("Successfully fetched paginated data.", authorService.getPaginatedAuthorList(filterRequest));
+	}
 
 	@DeleteMapping("/{deleteId}")
-	public ResponseObject deleteAuthor(@PathVariable Integer authorId) {
-		return getSuccessResponse("Success !!", authorService.deleteAuthor(authorId));
+	public ResponseObject deleteAuthor(@PathVariable Integer deleteId) {
+		     authorService.deleteAuthor(deleteId);
+			 return getSuccessResponse("Success !!",true);
+
 	}
 
 }

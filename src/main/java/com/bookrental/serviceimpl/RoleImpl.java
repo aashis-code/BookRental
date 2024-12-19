@@ -1,16 +1,21 @@
 package com.bookrental.serviceimpl;
 
 import com.bookrental.dto.RoleDto;
+import com.bookrental.exceptions.ResourceAlreadyExist;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.CoustomBeanUtils;
 import com.bookrental.model.Role;
 import com.bookrental.repository.RoleRepo;
 import com.bookrental.service.RoleService;
+
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,10 +30,14 @@ public class RoleImpl implements RoleService {
             role = roleRepo.findById(roleDto.getId()).orElseThrow(() -> new ResourceNotFoundException("RoleId", String.valueOf(roleDto.getId())));
             CoustomBeanUtils.copyNonNullProperties(roleDto, role);
         } else {
+        	Optional<Role> roleFetch = roleRepo.findByName(roleDto.getName().trim().toUpperCase());
+        	if(roleFetch.isPresent()) {
+        		throw new ResourceAlreadyExist("Role", roleDto.getName());
+        	}
             role = new Role();
-            BeanUtils.copyProperties(roleDto, role, "id");
+            CoustomBeanUtils.copyNonNullProperties(roleDto, role);
         }
-        role.setName(role.getName().toUpperCase());
+        role.setName(role.getName().trim().toUpperCase());
         roleRepo.save(role);
         return true;
     }
@@ -46,15 +55,23 @@ public class RoleImpl implements RoleService {
     public List<Role> getAllRoles() {
         return roleRepo.findAll();
     }
+    
+	@Override
+	public List<Role> getPaginatedRoleList(Integer pageNo, Integer pageSize) {
+		Pageable page = PageRequest.of(pageNo, pageSize);
+		return roleRepo.findAllByDeleted(page, Boolean.FALSE);
+	}
 
     @Override
-    public boolean roleDelete(int roleId) {
+    @Transactional
+    public void roleDelete(int roleId) {
         if (roleId < 1) {
             throw new ResourceNotFoundException("Please, provide valid role ID.", null);
         }
-        Role role = this.roleRepo.findById(roleId).orElseThrow(() -> new ResourceNotFoundException("Role Id", String.valueOf(roleId)));
-        this.roleRepo.delete(role);
-        return true;
+         int result = this.roleRepo.deleteRoleById(roleId);
+         if(result<1) {
+        	 throw new ResourceNotFoundException("ROleId", String.valueOf(roleId));
+         }
     }
 
 }

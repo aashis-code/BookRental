@@ -1,9 +1,12 @@
 package com.bookrental.controller;
 
+import com.bookrental.dto.AssignRoleDto;
+import com.bookrental.dto.FilterRequest;
 import com.bookrental.dto.MemberDto;
 import com.bookrental.helper.ResponseObject;
 import com.bookrental.service.MemberService;
 import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,8 +21,8 @@ public class MemberController extends BaseController {
 
     @PostMapping("/")
     public ResponseObject addMember(@RequestBody @Valid MemberDto memberDto) {
-        boolean result = memberService.memberOperation(memberDto);
-        return new ResponseObject(true, "Success on member entity operation !!", result);
+       
+        return new ResponseObject(true, "Success on member entity operation !!",  memberService.saveAndUpdateMember(memberDto));
     }
 
     @GetMapping("/{memberId}")
@@ -33,10 +36,21 @@ public class MemberController extends BaseController {
 
         return getSuccessResponse("Success !!", memberService.getAllMembers());
     }
+    
+	@GetMapping("/paginated")
+	public ResponseObject getPagenatedMembers(@RequestBody FilterRequest filterRequest) {
+		return getSuccessResponse("Successfully fetched paginated data.", memberService.getPaginatedMemberList(filterRequest));
+	}
 
     @DeleteMapping("/{memberId}")
     public ResponseObject deleteMember(@PathVariable Integer memberId) {
-        return getSuccessResponse("Successfully deleted member !!", memberService.deleteMember(memberId));
+    	memberService.deleteMember(memberId);
+        return getSuccessResponse("Successfully deleted member !!", true);
+    }
+    
+    @PostMapping("/assign-roles")
+    public ResponseObject assignRolesToMember(@RequestBody AssignRoleDto assignRoleDto) {
+    	return getSuccessResponse("Successfully assigned roles !!", memberService.assignRoles(assignRoleDto.getMemberId(), assignRoleDto.getRoles()));
     }
 
 }

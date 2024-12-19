@@ -3,6 +3,8 @@ package com.bookrental.dto;
 import java.time.LocalDate;
 import java.util.Set;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -32,7 +34,7 @@ public class BookAddRequest {
 
 	private LocalDate publishedDate;
 
-	private String photo;
+	private MultipartFile photo;
 
 	private Set<Integer> authorId;
 

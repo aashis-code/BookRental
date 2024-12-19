@@ -1,7 +1,13 @@
 package com.bookrental.serviceimpl;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,12 +17,22 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bookrental.dto.BookAddRequest;
+import com.bookrental.dto.BookDto;
+import com.bookrental.dto.BookResponse;
+import com.bookrental.dto.FilterRequest;
 import com.bookrental.dto.ListOfBookRequest;
+import com.bookrental.dto.PaginatedResponse;
+import com.bookrental.exceptions.FileUploadFailException;
+import com.bookrental.exceptions.ResourceAlreadyExist;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.CoustomBeanUtils;
+import com.bookrental.helper.CustomPagination;
 import com.bookrental.helper.ExcelHelper;
 import com.bookrental.model.Author;
 import com.bookrental.model.Book;
@@ -26,7 +42,7 @@ import com.bookrental.repository.BookRepo;
 import com.bookrental.repository.CategoryRepo;
 import com.bookrental.service.BookService;
 
-import jakarta.transaction.Transactional;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -40,40 +56,35 @@ public class BookImpl implements BookService {
 	private final BookRepo bookRepo;
 
 	@Override
-	@Transactional
 	public boolean bookSaveAndUpdate(ListOfBookRequest bookAddRequests) {
 
 		List<Book> books = new ArrayList<>();
 		Map<Integer, Author> authorMap = new HashMap<>();
 		Map<Integer, Category> categoryMap = new HashMap<>();
-//I think you should work on basis of ISBN
+		
 		for (BookAddRequest bookAddRequest : bookAddRequests.getBookAddRequest()) {
-
-			Optional<Book> book = bookRepo.findByIsbn(bookAddRequest.getIsbn());
-			if (bookAddRequest.getId() == null && book.isPresent() && bookAddRequest.getIsbn() != null
-					&& bookAddRequest.getIsbn().equals(book.get().getIsbn())) {
-				bookRepo.incrementBookStockByIsbn(bookAddRequest.getIsbn(), bookAddRequest.getStockCount());
-				continue;
-			}
-
+			String photoPath = savePicture(bookAddRequest.getPhoto());
+			compareDate(bookAddRequest.getPublishedDate());
 			Set<Integer> authorIds = bookAddRequest.getAuthorId();
 			for (Integer authorId : authorIds) {
 				if (!authorMap.containsKey(authorId)) {
-					Author author = authorRepo.findById(authorId)
+					Author author = authorRepo.findByIdAndDeleted(authorId, Boolean.FALSE)
 							.orElseThrow(() -> new ResourceNotFoundException("AuthorId", String.valueOf(authorId)));
 					authorMap.put(author.getId(), author);
 				}
 			}
 			if (!categoryMap.containsKey(bookAddRequest.getCategoryId())) {
-				Category category = this.categoryRepo.findById(bookAddRequest.getCategoryId())
+				Category category = this.categoryRepo.findByIdAndDeleted(bookAddRequest.getCategoryId(), Boolean.FALSE)
 						.orElseThrow(() -> new ResourceNotFoundException("CategoryId",
 								String.valueOf(bookAddRequest.getCategoryId())));
 				categoryMap.put(category.getId(), category);
 			}
 
-			if (bookAddRequest.getId() != null) {
-				CoustomBeanUtils.copyNonNullProperties(bookAddRequest, book.get());
-				books.add(book.get());
+			if (bookAddRequest.getId() != null && bookAddRequest.getId() > 0) {
+				Book book = bookRepo.findByIdAndDeleted(bookAddRequest.getId(), Boolean.FALSE).orElseThrow(
+						() -> new ResourceNotFoundException("BookId", String.valueOf(bookAddRequest.getId())));
+				CoustomBeanUtils.copyNonNullProperties(bookAddRequest, book);
+				books.add(updateAuthorAndCategory(book, bookAddRequest, authorMap,categoryMap));
 				continue;
 			}
 
@@ -82,6 +93,7 @@ public class BookImpl implements BookService {
 			bookAddRequestToBook.setCategory(categoryMap.get(bookAddRequest.getCategoryId()));
 			bookAddRequestToBook
 					.setAuthors(bookAddRequest.getAuthorId().stream().map(authorMap::get).collect(Collectors.toList()));
+			bookAddRequestToBook.setPhoto(photoPath);
 			books.add(bookAddRequestToBook);
 		}
 
@@ -90,19 +102,29 @@ public class BookImpl implements BookService {
 	}
 
 	@Override
-	public List<BookAddRequest> getAllBooks() {
+	public List<BookResponse> getAllBooks() {
 		String[] fields = { "authorId", "categoryId" };
-		List<Book> books = bookRepo.findAll();
-		List<BookAddRequest> bookAddRequest = new ArrayList<>();
+		List<Book> books = bookRepo.findAllByDeleted(Boolean.FALSE);
+		List<BookResponse> bookResponse = new ArrayList<>();
 		for (Book book : books) {
-			BookAddRequest bookAdd = new BookAddRequest();
+			BookResponse bookAdd = new BookResponse();
 			BeanUtils.copyProperties(book, bookAdd, fields);
 
-			bookAdd.setAuthorId(book.getAuthors().stream().map(Author::getId).collect(Collectors.toSet()));
-			bookAdd.setCategoryId(book.getCategory().getId());
-			bookAddRequest.add(bookAdd);
+			bookAdd.setAuthorNames(book.getAuthors().stream().map(Author::getName).collect(Collectors.toSet()));
+			bookAdd.setCategoryName(book.getCategory().getName());
+			bookResponse.add(bookAdd);
 		}
-		return bookAddRequest;
+		return bookResponse;
+	}
+
+	
+	@Override
+	public PaginatedResponse getPaginatedBookList(FilterRequest filterRequest) {
+		Map<String, Object> object = CustomPagination.getPaginatedObject(filterRequest);
+		Page<Book> response = bookRepo.findByDeleted(object.get("keyword").toString(), (LocalDate)object.get("startDate"), (LocalDate)object.get("endDate"), Boolean.FALSE, (Pageable) object.get("pageable"));
+		return PaginatedResponse.builder().content(response.getContent())
+				.totalElements(response.getTotalElements()).currentPageIndex(response.getNumber())
+				.numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();
 	}
 
 	@Override
@@ -110,31 +132,105 @@ public class BookImpl implements BookService {
 		if (bookId < 1) {
 			throw new ResourceNotFoundException("Enter valid book Id.", null);
 		}
-		return bookRepo.findById(bookId)
+		return bookRepo.findByIdAndDeleted(bookId, Boolean.FALSE)
 				.orElseThrow(() -> new ResourceNotFoundException("BookId", String.valueOf(bookId)));
 	}
 
 	@Override
-	public boolean deleteBook(Integer bookId) {
+	public void deleteBook(Integer bookId) {
 		if (bookId < 1) {
 			throw new ResourceNotFoundException("Invalid Book Id.", null);
 		}
-		Book book = bookRepo.findById(bookId)
-				.orElseThrow(() -> new ResourceNotFoundException("BookId", String.valueOf(bookId)));
-		bookRepo.delete(book);
-		return true;
+		int result = bookRepo.deleteBookById(bookId);
+		if(result <1) {
+			throw new ResourceNotFoundException("BookId", String.valueOf(bookId));
+		}
 	}
 
 	@Override
-	public ByteArrayInputStream getBookOnExcel() {
-		List<BookAddRequest> books = getAllBooks();
+	public void getBookOnExcel(HttpServletResponse response) {
+		 List<BookResponse> books = getAllBooks();
 		ByteArrayInputStream byteArrayInputStream;
 		try {
 			byteArrayInputStream = ExcelHelper.exportToExcel(books);
+			response.setContentType("application/vnd.ms-excel");
+	        response.setHeader("Content-Disposition", "attachment; filename=\"books.xls\"");
+			byteArrayInputStream.transferTo(response.getOutputStream());
+			response.getOutputStream().flush();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		return byteArrayInputStream;
+	}
+	
+	
+	public Book updateAuthorAndCategory(Book book, BookAddRequest bookAddRequest, Map<Integer, Author> authorMap, Map<Integer, Category> categoryMap) {
+		List<Author> authors = new ArrayList<Author>();
+		Set<Integer> authorIds = bookAddRequest.getAuthorId();
+		Category category;
+		for (Integer authorId : authorIds) {
+			if( !authorMap.containsKey(authorId)) {
+				Author author = authorRepo.findByIdAndDeleted(authorId, Boolean.FALSE).orElseThrow(()-> new ResourceNotFoundException("AuthorId", String.valueOf(authorId)));
+				authors.add(author);
+			} else {
+				authors.add(authorMap.get(authorId));
+			}
+	   }
+		if(bookAddRequest.getCategoryId() != null && categoryMap.containsKey(bookAddRequest.getCategoryId())) {
+			category = categoryRepo.findByIdAndDeleted(bookAddRequest.getCategoryId(), Boolean.FALSE).orElseThrow(()-> new ResourceNotFoundException("CategoryId", String.valueOf(bookAddRequest.getCategoryId())));
+			categoryMap.put(bookAddRequest.getCategoryId(),category);
+		}
+		
+		book.setAuthors(authors);
+		book.setCategory(categoryMap.get(bookAddRequest.getCategoryId()));
+		return book;
+	}
+	
+	void compareDate(LocalDate date) {
+		if(date != null && !date.isBefore(LocalDate.now())) {
+			throw new ResourceAlreadyExist("Provided date is not valid.", null);
+		}
 	}
 
+	@Override
+	public List<BookDto> getBooksByCategory(Integer categoryId) {
+		if(categoryId <0) {
+			throw new ResourceNotFoundException("Enter valid category.", null);
+		}
+		return bookRepo.findBooksByCategoryId(categoryId).stream().map(book->{
+			BookDto bookDto = new BookDto();
+			CoustomBeanUtils.copyNonNullProperties(book, bookDto);
+			return bookDto;
+		}).collect(Collectors.toList());
+	}
+	
+	public String savePicture(MultipartFile file) {
+		
+		if(file == null || file.isEmpty()) {
+			throw new FileUploadFailException("File is missing.");
+		}
+	
+		String originalFilename = file.getOriginalFilename();
+		File f = new File("images");
+		if(!f.exists()) {
+			f.mkdir();
+		}
+		
+		String uploadImagePath = "images"+File.separator+ originalFilename;
+		
+		Path path = Paths.get(uploadImagePath);
+		
+		try {
+			Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	
+		return uploadImagePath;
+	}
+
+	@Override
+	public List<Book> getBooksByAuhtor(Integer authorId) {
+		Author author = authorRepo.findByIdAndDeleted(authorId, Boolean.FALSE).orElseThrow(()-> new ResourceNotFoundException("AuthorId", String.valueOf(authorId)));
+		return bookRepo.findByAuthors(author);
+	}
 }

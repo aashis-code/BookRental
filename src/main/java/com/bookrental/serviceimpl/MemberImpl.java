@@ -1,70 +1,147 @@
 package com.bookrental.serviceimpl;
 
-import com.bookrental.dto.MemberDto;
-import com.bookrental.exceptions.ResourceNotFoundException;
-import com.bookrental.helper.CoustomBeanUtils;
-import com.bookrental.model.Member;
-import com.bookrental.repository.MemberRepo;
-import com.bookrental.service.MemberService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.bookrental.dto.FilterRequest;
+import com.bookrental.dto.MemberDto;
+import com.bookrental.dto.PaginatedResponse;
+import com.bookrental.exceptions.ResourceAlreadyExist;
+import com.bookrental.exceptions.ResourceNotFoundException;
+import com.bookrental.helper.CoustomBeanUtils;
+import com.bookrental.helper.CustomPagination;
+import com.bookrental.model.Book;
+import com.bookrental.model.Member;
+import com.bookrental.model.Role;
+import com.bookrental.repository.MemberRepo;
+import com.bookrental.repository.RoleRepo;
+import com.bookrental.service.MemberService;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class MemberImpl implements MemberService {
 
-    private final MemberRepo memberRepo;
+	private final MemberRepo memberRepo;
 
-    private final PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public boolean memberOperation(MemberDto memberDto) {
-        Member member;
-        if (memberDto.getId() != null) {
-            member = memberRepo.findById(memberDto.getId()).orElseThrow(() -> new ResourceNotFoundException("MemberId", String.valueOf(memberDto.getId())));
-            CoustomBeanUtils.copyNonNullProperties(memberDto, member);
-            memberRepo.save(member);
-        } else {
-            member = new Member();
-            BeanUtils.copyProperties(memberDto, member, "id");
-            member.setPassword(passwordEncoder.encode(memberDto.getPassword()));
-            memberRepo.save(member);
-        }
-        return true;
-    }
+	private final RoleRepo roleRepo;
 
-    @Override
-    public MemberDto getMemberById(Integer memberId) {
-        if (memberId < 1) {
-            throw new ResourceNotFoundException("Please, provide valid member ID.", null);
-        }
-        MemberDto memberDto = new MemberDto();
-        Member member = memberRepo.findById(memberId).orElseThrow(() -> new ResourceNotFoundException("Member Id", String.valueOf(memberId)));
-        CoustomBeanUtils.copyNonNullProperties(member,memberDto);
-        return memberDto;
-    }
+	@Override
+	@Transactional
+	public boolean saveAndUpdateMember(MemberDto memberDto) {
+		Member member;
+		if (memberDto.getId() != null) {
+			member = memberRepo.findByIdAndDeleted(memberDto.getId(), Boolean.FALSE)
+					.orElseThrow(() -> new ResourceNotFoundException("MemberId", String.valueOf(memberDto.getId())));
+			CoustomBeanUtils.copyNonNullProperties(memberDto, member);
+			memberRepo.save(member);
+		} else {
+			Role role;
+			member = new Member();
+			CoustomBeanUtils.copyNonNullProperties(memberDto, member);
+			Optional<Role> roleByName = roleRepo.findByName("NORMAL");
+			if(roleByName.isEmpty()) {
+				role = Role.builder()
+				.name("NORMAL")
+				.description("This is basic level role assigned for ever member.")
+				.build();
+				roleRepo.save(role);
+				member.setRoles(List.of(role));
+				return true;
+			} 
+			member.setRoles(List.of(roleByName.get()));
+			member.setPassword(passwordEncoder.encode(memberDto.getPassword()));
+			memberRepo.save(member);
+		}
+		return true;
+	}
 
-    @Override
-    public List<MemberDto> getAllMembers() {
-        return memberRepo.findAll().stream().map(member -> {
-            MemberDto memberDto = new MemberDto();
-            CoustomBeanUtils.copyNonNullProperties(member,memberDto);
-            return memberDto;
-        }).toList();
-    }
+	@Override
+	public MemberDto getMemberById(Integer memberId) {
+		if (memberId < 1) {
+			throw new ResourceNotFoundException("Please, provide valid member ID.", null);
+		}
+		MemberDto memberDto = new MemberDto();
+		Member member = memberRepo.findByIdAndDeleted(memberId, Boolean.FALSE)
+				.orElseThrow(() -> new ResourceNotFoundException("Member Id", String.valueOf(memberId)));
+		CoustomBeanUtils.copyNonNullProperties(member, memberDto);
+		memberDto.setRoles(member.getRoles().stream().map(Role::getName).toList());
+		return memberDto;
+	}
 
-    @Override
-    public boolean deleteMember(Integer memberId) {
-        if (memberId < 1) {
-            throw new ResourceNotFoundException("Please, provide valid member ID.", null);
-        }
-        Member member = this.memberRepo.findById(memberId).orElseThrow(() -> new ResourceNotFoundException("Member Id", String.valueOf(memberId)));
-        this.memberRepo.delete(member);
-        return true;
-    }
+	@Override
+	public List<MemberDto> getAllMembers() {
+		return memberRepo.findAllMember(Boolean.FALSE).stream().map(member -> {
+			MemberDto memberDto = new MemberDto();
+			CoustomBeanUtils.copyNonNullProperties(member, memberDto);
+			memberDto.setRoles(member.getRoles().stream().map(Role::getName).toList());
+			return memberDto;
+		}).toList();
+	}
+
+	@Override
+	public PaginatedResponse getPaginatedMemberList(FilterRequest filterRequest) {
+		Map<String, Object> object = CustomPagination.getPaginatedObject(filterRequest);
+		Page<Member> response = memberRepo.findByDeleted(object.get("keyword").toString(), (LocalDate)object.get("startDate"), (LocalDate)object.get("endDate"), Boolean.FALSE, (Pageable) object.get("pageable"));
+		return PaginatedResponse.builder().content(response.getContent().stream().map(member ->{
+			MemberDto memberDto = new MemberDto();
+			CoustomBeanUtils.copyNonNullProperties(member, memberDto);
+			return memberDto;
+		}).collect(Collectors.toList()))
+				.totalElements(response.getTotalElements()).currentPageIndex(response.getNumber())
+				.numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();
+
+	}
+
+	@Override
+	public void deleteMember(Integer memberId) {
+		if (memberId < 1) {
+			throw new ResourceNotFoundException("Please, provide valid member ID.", null);
+		}
+		 int result = memberRepo.deleteMemberById(memberId);
+		 if(result<1) {
+			 throw new ResourceNotFoundException("MemberId", String.valueOf(memberId));
+		 }
+	}
+
+	@Override
+	public boolean assignRoles(Integer memberId, List<String> roles) {
+		if (memberId < 1) {
+			throw new ResourceNotFoundException("Please, provide valid member ID.", null);
+		}
+		Member member = this.memberRepo.findByIdAndDeleted(memberId, Boolean.FALSE)
+				.orElseThrow(() -> new ResourceNotFoundException("Member Id", String.valueOf(memberId)));
+		List<String> roleNames = member.getRoles().stream().map(Role::getName).toList();
+		List<Role> listOfRoles = new ArrayList<Role>();
+		for (String role : roles) {
+			String upperCaseRole = role.trim().toUpperCase();
+			if (!roleNames.contains(upperCaseRole)) {
+				Role roleEntity = roleRepo.findByName(upperCaseRole)
+						.orElseThrow(() -> new ResourceNotFoundException("Role", upperCaseRole));
+				listOfRoles.add(roleEntity);
+			}
+		}
+		if (!listOfRoles.isEmpty()) {
+			member.setRoles(listOfRoles);
+			memberRepo.save(member);
+		}
+		return true;
+	}
+
 }

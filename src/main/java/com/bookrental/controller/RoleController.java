@@ -30,10 +30,16 @@ public class RoleController extends BaseController {
     public ResponseObject getAllRoles() {
         return getSuccessResponse("Success !!", roleService.getAllRoles());
     }
+    
+	@GetMapping("/paginated")
+	public ResponseObject getPagenatedRoles(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo, @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
+		return getSuccessResponse("Successfully fetched paginated data.", roleService.getPaginatedRoleList(pageNo, pageSize));
+	}
 
     @DeleteMapping("/{memberId}")
     public ResponseObject deleteMember(@PathVariable Integer memberId) {
-        return getSuccessResponse("Successfully deleted member !!", roleService.roleDelete(memberId));
+    	roleService.roleDelete(memberId);
+        return getSuccessResponse("Successfully deleted member !!", true);
     }
 
 }

@@ -8,17 +8,17 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
 public class CoustomBeanUtils {
-	
+
+	private CoustomBeanUtils() {}
 	
 	public static void copyNonNullProperties(Object source, Object target) {
 		BeanUtils.copyProperties(source, target, getNUllPropertyNames(source));
 	}
-	
-	
+
 	private static String[] getNUllPropertyNames(Object source) {
 		
 		final BeanWrapper src = new BeanWrapperImpl(source);
-		Set<String> emptyNames = new HashSet<String>();
+		Set<String> emptyNames = new HashSet<>();
 		
 		for(var propertyDescriptor:src.getPropertyDescriptors()) {
 			String name = propertyDescriptor.getName();
@@ -27,7 +27,6 @@ public class CoustomBeanUtils {
 				emptyNames.add(name);
 			}
 		}
-		
 		return emptyNames.toArray(new String[0]);
 	}
 

@@ -2,7 +2,9 @@ package com.bookrental.model;
 
 import java.time.LocalDate;
 
+import com.bookrental.audit.Auditable;
 import com.bookrental.helper.RentType;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +31,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "bookTransaction", uniqueConstraints = {})
-public class BookTransaction {
+public class BookTransaction extends Auditable{
 
 	@Id
 	@SequenceGenerator(name = "bookTransaction_seq_gen", allocationSize = 1, sequenceName = "bookTransaction_seq")
@@ -54,10 +56,12 @@ public class BookTransaction {
 
 	@ManyToOne
 	@JoinColumn(name = "memberId", foreignKey = @ForeignKey(name = "FK_bookTransaction_member"))
+	@JsonManagedReference
 	private Member member;
 
 	@ManyToOne
 	@JoinColumn(name = "bookId", foreignKey = @ForeignKey(name = "FK_bookTransaction_book"))
+	@JsonManagedReference
 	private Book book;
 
 }

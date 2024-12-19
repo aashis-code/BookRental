@@ -1,17 +1,26 @@
 package com.bookrental.serviceimpl;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.bookrental.dto.AuthorDto;
+import com.bookrental.dto.FilterRequest;
+import com.bookrental.dto.PaginatedResponse;
 import com.bookrental.exceptions.ResourceAlreadyExist;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.CoustomBeanUtils;
+import com.bookrental.helper.CustomPagination;
 import com.bookrental.model.Author;
 import com.bookrental.repository.AuthorRepo;
 import com.bookrental.service.AuthorService;
+
+import jakarta.transaction.Transactional;
 
 @Component
 public class AuthorImpl implements AuthorService {
@@ -23,37 +32,16 @@ public class AuthorImpl implements AuthorService {
 	}
 
 	@Override
-	public boolean authorOperation(AuthorDto authorDto) {
-		
-		List<Author> authors;
-
+	public boolean saveAndUpdateAuthor(AuthorDto authorDto) {
+		Author author;
 		if (authorDto.getId() != null) {
-
-			Author author = authorRepo.findByIdAndDeleted(authorDto.getId(), Boolean.FALSE)
+			author = authorRepo.findByIdAndDeleted(authorDto.getId(), Boolean.FALSE)
 					.orElseThrow(() -> new ResourceNotFoundException("AuthorId", String.valueOf(authorDto.getId())));
-            
-			if (!author.getEmail().equalsIgnoreCase(authorDto.getEmail()) || !author.getMobileNumber().equals(authorDto.getMobileNumber())) {
-				authors = authorRepo.findByEmailOrPhoneNumber(authorDto.getEmail().toLowerCase(), authorDto.getMobileNumber(), Boolean.FALSE);
-				
-				if(!author.getEmail().equalsIgnoreCase(authorDto.getEmail())) {
-					checkEmailAlreadExist(authors, authorDto);	
-				}
-				
-				if(!author.getMobileNumber().equals(authorDto.getMobileNumber())) {
-					checkPhoneNumberAlreadyExist(authors, authorDto);	
-				}	
-			}
-			
 			CoustomBeanUtils.copyNonNullProperties(authorDto, author);
 			authorRepo.save(author);
-			
 		} else {
-			authors = authorRepo.findByEmailOrPhoneNumber(authorDto.getEmail().toLowerCase(), authorDto.getMobileNumber(), Boolean.FALSE);
-			checkEmailAlreadExist(authors, authorDto);
-			checkPhoneNumberAlreadyExist(authors, authorDto);	
-			Author author = new Author();
+			author = new Author();
 			CoustomBeanUtils.copyNonNullProperties(authorDto, author);
-			author.setEmail(author.getEmail().toLowerCase());
 			authorRepo.save(author);
 		}
 		return true;
@@ -75,26 +63,36 @@ public class AuthorImpl implements AuthorService {
 	}
 
 	@Override
-	public boolean deleteAuthor(Integer authorId) {
+	public PaginatedResponse getPaginatedAuthorList(FilterRequest filterRequest) {
+		Map<String, Object> object = CustomPagination.getPaginatedObject(filterRequest);
+		Page<Author> response = authorRepo.findByDeleted(object.get("keyword").toString(), (LocalDateTime)object.get("startDate"), (LocalDateTime)object.get("endDate"), Boolean.FALSE, (Pageable) object.get("pageable"));
+		return PaginatedResponse.builder().content(response.getContent())
+				.totalElements(response.getTotalElements()).currentPageIndex(response.getNumber())
+				.numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();
+	}
+
+	@Override
+	@Transactional
+	public void deleteAuthor(Integer authorId) {
 		if (authorId < 1) {
 			throw new ResourceNotFoundException("Invalid author Id.", null);
 		}
-		authorRepo.findByIdAndDeleted(authorId, Boolean.FALSE)
-				.orElseThrow(() -> new ResourceNotFoundException("AuthorId", String.valueOf(authorId)));
-		authorRepo.deleteAuthorById(authorId);
-		return true;
+		int result = authorRepo.deleteAuthorById(authorId);
+		if(result <1) {
+			throw new ResourceNotFoundException("AuthorId", String.valueOf(authorId));
+		}
 	}
-	
+
 	// check whether email and phone number already exist in database before update
 	public void checkEmailAlreadExist(List<Author> authors, AuthorDto authorDto) {
-		
+
 		for (Author aut : authors) {
 			if (authorDto.getEmail().equalsIgnoreCase(aut.getEmail())) {
 				throw new ResourceAlreadyExist("Email is already used.", null);
 			}
 		}
 	}
-	
+
 	public void checkPhoneNumberAlreadyExist(List<Author> authors, AuthorDto authorDto) {
 		for (Author aut : authors) {
 			if (authorDto.getMobileNumber().equals(aut.getMobileNumber())) {
