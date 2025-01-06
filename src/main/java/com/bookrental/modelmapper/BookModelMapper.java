@@ -21,7 +21,7 @@ public class BookModelMapper {
 				
 				  skip(destination.getAuthors());
 				  skip(destination.getCategory());
-				  skip(destination.getBookTransactions());
+//				  skip(destination.getBookTransactions());
 			}
 		});
 		

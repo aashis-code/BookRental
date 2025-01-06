@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
+import com.bookrental.exceptions.ResourceNotFoundException;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,8 +25,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private final JwtService jwtService;
 	private final UserDetailsService userDetailsService;
 
-	public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService,
-			HandlerExceptionResolver handlerExceptionResolver) {
+	public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
 		this.jwtService = jwtService;
 		this.userDetailsService = userDetailsService;
 	}
@@ -35,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		String authHeader = request.getHeader("Authorization");
 
-		if (authHeader != null && authHeader.startsWith("Bearer")) {
+		if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
 			final String jwt = authHeader.substring(7);
 			final String userEmail = jwtService.extractUsername(jwt);
@@ -49,6 +50,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 					authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 					SecurityContextHolder.getContext().setAuthentication(authToken);
+				} else {
+					throw new ResourceNotFoundException("Please, login again", null);	
 				}
 			}
 		}

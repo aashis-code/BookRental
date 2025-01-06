@@ -1,5 +1,6 @@
-package com.bookrental.serviceImpl;
+package com.bookrental.serviceimpl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
@@ -8,17 +9,14 @@ import com.bookrental.model.Member;
 import com.bookrental.repository.MemberRepo;
 import com.bookrental.security.LoginMemberDto;
 import com.bookrental.service.AuthenticationSevice;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
+@RequiredArgsConstructor
 public class AuthenticationImpl implements AuthenticationSevice{
 
 	private final MemberRepo memberRepo;
 	private final AuthenticationManager authenticationManager;
-
-	public AuthenticationImpl(MemberRepo memberRepo, AuthenticationManager authenticationManager) {
-		this.memberRepo = memberRepo;
-		this.authenticationManager = authenticationManager;
-	}
 
 	public Member authenticate(LoginMemberDto input) {
 		authenticationManager

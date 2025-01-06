@@ -7,7 +7,10 @@ spring:
         username: postgres
         password: admin
         driverClassName: org.postgresql.Driver
-#HIBERNATE CONFIGURATION
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  #HIBERNATE CONFIGURATION
   jpa:
         properties:
             hibenate:

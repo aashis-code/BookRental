@@ -1,31 +1,34 @@
 package com.bookrental.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bookrental.dto.BookTransactionDto;
+import com.bookrental.dto.FilterRequest;
 import com.bookrental.helper.ResponseObject;
 import com.bookrental.service.BookTransactionService;
 
+import jakarta.validation.Valid;
+
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/api/book-transaction")
-public class BookTransactionController {
+public class BookTransactionController extends BaseController {
 
-	@Autowired
-	private BookTransactionService bookTransactionService;
+	private final BookTransactionService bookTransactionService;
 
-	@PostMapping("/member-id/{memberId}/book-id/{bookId}")
-	public ResponseObject rentBookByMember(@PathVariable Integer memberId, @PathVariable Integer bookId, @RequestParam(value="returnBook", defaultValue = "false") Boolean returnBook) {
-
-		boolean bookRent = bookTransactionService.bookRentOperation(memberId, bookId, returnBook);
-
-		if (bookRent == false) {
-			return new ResponseObject(false, "Internal Server error occur !!", null);
-		}
-
-		return new ResponseObject(true, "Successffully rented the book", null);
+	@PostMapping("/")
+	public ResponseObject rentBookByMember(@RequestBody @Valid BookTransactionDto bookTransactionDto) {
+		return getSuccessResponse("Success !!", bookTransactionService.bookRentCreateAndUpdate(bookTransactionDto));
+	}
+	
+	@GetMapping("/")
+	public ResponseObject getPaginatedBookTransaction(@RequestBody FilterRequest filterRequest) {
+		return getSuccessResponse("Successfully fetched paginated data.", bookTransactionService.getPaginatedBookTransaction(filterRequest));
 	}
 }

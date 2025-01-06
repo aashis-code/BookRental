@@ -1,11 +1,12 @@
 package com.bookrental.service;
 
-import org.springframework.stereotype.Service;
+import com.bookrental.dto.BookTransactionDto;
+import com.bookrental.dto.FilterRequest;
+import com.bookrental.dto.PaginatedResponse;
 
-@Service
 public interface BookTransactionService {
-	
-	boolean bookRentOperation(Integer memberId, Integer bookId, Boolean returnBook);
-	
 
+	boolean bookRentCreateAndUpdate(BookTransactionDto bookTransactionDto);
+
+	PaginatedResponse getPaginatedBookTransaction(FilterRequest filterRequest);
 }

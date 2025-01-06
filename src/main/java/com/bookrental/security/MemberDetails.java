@@ -1,6 +1,7 @@
 package com.bookrental.security;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.bookrental.model.Member;
+
 
 public class MemberDetails implements UserDetails {
 
@@ -23,8 +25,8 @@ public class MemberDetails implements UserDetails {
 	public MemberDetails(Member member) {
 		this.username = member.getEmail();
 		this.password = member.getPassword();
-		this.authorities = member.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName()))
-				.collect(Collectors.toList());
+		this.authorities = (member.getRoles() != null)?member.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_"+role.getName()))
+				.collect(Collectors.toList()):Collections.emptyList();
 	}
 
 	@Override

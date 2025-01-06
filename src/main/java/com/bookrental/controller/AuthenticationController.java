@@ -3,6 +3,7 @@ package com.bookrental.controller;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,44 +11,35 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.ResponseObject;
-import com.bookrental.repository.MemberRepo;
 import com.bookrental.security.JwtService;
 import com.bookrental.security.LoginMemberDto;
 import com.bookrental.security.LoginResponse;
-import com.bookrental.service.AuthenticationSevice;
+
+import lombok.RequiredArgsConstructor;
 
 @RequestMapping("/auth")
 @RestController
+@RequiredArgsConstructor
 public class AuthenticationController {
+
 	private final JwtService jwtService;
 
-	private final MemberRepo memberRepo;
-
 	private final AuthenticationManager authenticationManager;
-
-	public AuthenticationController(JwtService jwtService, AuthenticationManager authenticationManager, MemberRepo memberRepo) {
-		this.jwtService = jwtService;
-		this.authenticationManager = authenticationManager;
-		this.memberRepo = memberRepo;
-	}
-
 
 //    Log In user
 	@PostMapping("/login")
 	public ResponseObject authenticate(@RequestBody LoginMemberDto loginMemberDto) {
-//		Member authenticatedUser = authenticationService.authenticate(loginMemberDto);
 
 		Authentication authenticate = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginMemberDto.getEmail(), loginMemberDto.getPassword()));
 
 		if (authenticate.isAuthenticated()) {
-//			user object fetch
-			String jwtToken = jwtService.generateToken(loginMemberDto.getEmail());
+			String jwtToken = jwtService.generateToken((UserDetails) authenticate.getPrincipal());
 			LoginResponse loginResponse = LoginResponse.builder().token(jwtToken)
 					.expiresIn(jwtService.getExpirationTime()).build();
 			return new ResponseObject(true, "", loginResponse);
 		} else {
-			throw new ResourceNotFoundException("", null);
+			throw new ResourceNotFoundException("Enter Valid user details.", null);
 		}
 
 	}
