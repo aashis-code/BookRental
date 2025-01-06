@@ -38,8 +38,4 @@ public class Author extends Auditable {
 	@Column(name = "mobile_number")
 	private String mobileNumber;
 
-	@ManyToMany(mappedBy = "authors")
-	@JsonBackReference
-	private List<Book> books;
-
 }

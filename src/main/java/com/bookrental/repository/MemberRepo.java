@@ -2,6 +2,7 @@ package com.bookrental.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -25,7 +26,7 @@ public interface MemberRepo extends JpaRepository<Member, Integer> {
 
 	Optional<Member> findByIdAndDeleted(Integer memberId, Boolean deleted);
 
-	@Query(value = "select * from member where email = ?1 or mobile_number = ?2 and deleted = ?3", nativeQuery = true)
+	@Query(value = "selectfilterMemberPaginated * from member where email = ?1 or mobile_number = ?2 and deleted = ?3", nativeQuery = true)
 	List<Member> findByEmailOrPhoneNumber(String email, String phoneNumber, Boolean deleted);
 
 	@Modifying
@@ -39,8 +40,12 @@ public interface MemberRepo extends JpaRepository<Member, Integer> {
 	@Query(value="select * from member where deleted = ?1", nativeQuery = true)
 	List<Member> findAllMember(Boolean deleted);
 	
-	@Query(value = "SELECT * FROM member WHERE name ILIKE %?1% AND created_date BETWEEN ?2 AND ?3 AND deleted = ?4", nativeQuery = true)
-	Page<Member> findByDeleted(
+	@Query(value = "select id, name, email, mobile_number, address , created_by , to_char(created_date, 'YYYY-MM-DD HH24:MI:SS') as created_date,"
+			+ "last_modified_by, to_char(modified_date, 'YYYY-MM-DD HH24:MI:SS') as last_modified_date from member where "
+			+ "(?1 is null or name ilike %?1%) "
+			+ "and created_date between coalesce(?2, created_date) and coalesce(?3, created_date) and (?4 is null or deleted = ?4)", 
+			nativeQuery = true)
+	Page<Map<String, Object>> filterMemberPaginated(
 			                   String keyword,
 			                   LocalDate startDate,
 			                   LocalDate endDate,

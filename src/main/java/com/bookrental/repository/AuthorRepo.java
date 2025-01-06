@@ -1,7 +1,6 @@
 package com.bookrental.repository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.bookrental.model.Author;
@@ -22,21 +20,16 @@ public interface AuthorRepo extends JpaRepository<Author, Integer> {
 	Optional<Author> findByEmailAndDeleted(String email, boolean deleted);
 
 	List<Author> findByDeleted(Boolean deleted);
-	
-//	@Query(value="select * from author where ?1= like '%?2%'", nativeQuery = true)
-//	List<Author> findByDeleted(String searchField, String keyword, Pageable page, Boolean deleted);
 
-	@Query(value = "SELECT * FROM author WHERE name ILIKE %?1% AND created_date BETWEEN ?2 AND ?3 AND deleted = ?4", nativeQuery = true)
-	Page<Author> findByDeleted(
-			                   String keyword,
-			                   LocalDateTime startDate,
-			                   LocalDateTime endDate,
-	                           Boolean deleted,
-	                           Pageable pageable);
+	@Query(value = "select * from author where name ilike %?1% and "
+			+ "created_date between coalesce(?2, created_date) and "
+			+ "coalesce(?3, created_date) and (?4 is null or deleted = ?4)", 
+			nativeQuery = true)
+	Page<Map<String, Object>> filterAuthorPaginated(String keyword, LocalDate startDate, LocalDate endDate, Boolean deleted,
+			Pageable pageable);
 
-	
 	Optional<Author> findByIdAndDeleted(Integer authorId, Boolean deleted);
-	
+
 	boolean existsByEmail(String email);
 
 	@Query(value = "select * from author where email = ?1 or mobile_number = ?2 and deleted = ?3", nativeQuery = true)

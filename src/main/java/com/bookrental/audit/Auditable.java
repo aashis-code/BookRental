@@ -1,9 +1,7 @@
 package com.bookrental.audit;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,8 +14,6 @@ import com.bookrental.model.BaseEntityDelete;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,29 +22,29 @@ import lombok.Setter;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public class Auditable extends BaseEntityDelete {
-	
-	    @CreatedBy
-	    @Column(name = "created_by",updatable = false)
-		private String createdBy;
-		
-	    @CreatedDate
-	    @Column(name="created_date", updatable = false)
-		private LocalDateTime createdDate;
-		
-	    @LastModifiedBy
-	    @Column(name="last_modified_by")
-		private String lastModifiedBy;
-		
-		@LastModifiedDate
-		@Column(name="modified_date", updatable = false)
-		private LocalDateTime lastModifiedDate;
-		
-		public String getCreatedDate() {
-			return createdDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-		}
-		
-		public String getLastModifiedDate() {
-			return lastModifiedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-		}
+
+	@CreatedBy
+	@Column(name = "created_by", updatable = false)
+	private String createdBy;
+
+	@CreatedDate
+	@Column(name = "created_date", updatable = false)
+	private LocalDateTime createdDate;
+
+	@LastModifiedBy
+	@Column(name = "last_modified_by")
+	private String lastModifiedBy;
+
+	@LastModifiedDate
+	@Column(name = "modified_date", updatable = false)
+	private LocalDateTime lastModifiedDate;
+
+	public String getCreatedDate() {
+		return createdDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	}
+
+	public String getLastModifiedDate() {
+		return lastModifiedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	}
 
 }

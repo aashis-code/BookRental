@@ -48,17 +48,11 @@ public class Book extends Auditable {
 
 	@ManyToMany
 	@JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "book_id", foreignKey = @ForeignKey(name = "FK_book_author_book")), inverseJoinColumns = @JoinColumn(name = "author_id", foreignKey = @ForeignKey(name = "FK_book_author_author")))
-	@JsonManagedReference
 	private List<Author> authors;
 
 	@ManyToOne
-	@JoinColumn(name = "categoryId", foreignKey = @ForeignKey(name = "FK_book_category"))
-	@JsonManagedReference
+	@JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "FK_book_category"))
 	private Category category;
-
-	@OneToMany(mappedBy = "book")
-	@JsonBackReference
-	private List<BookTransaction> bookTransactions;
 	
 
 }

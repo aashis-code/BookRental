@@ -2,6 +2,7 @@ package com.bookrental.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -46,8 +47,10 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
 	
 	List<Book> findAllByDeleted(Boolean deleted);
 	
-	@Query(value = "SELECT * FROM book WHERE name ILIKE %?1% AND published_date BETWEEN ?2 AND ?3 AND deleted = ?4", nativeQuery = true)
-	Page<Book> findByDeleted(
+    @Query(value = "select id, name, isbn,number_of_pages,rating, photo, stock_count, created_by , to_char(created_date, 'YYYY-MM-DD HH24:MI:SS') as created_date, \r\n"
+    		+ "last_modified_by, to_char(modified_date, 'YYYY-MM-DD HH24:MI:SS') as last_modified_date from book where name ilike %?1%\r\n"
+    		+ "and created_date between coalesce(?2, created_date) and coalesce(?3, created_date) and (?4 is null or deleted = ?4)", nativeQuery = true)
+	Page<Map<String, Object>> filterBookAndPagination(
 			                   String keyword,
 			                   LocalDate startDate,
 			                   LocalDate endDate,

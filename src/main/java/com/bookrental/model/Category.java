@@ -35,8 +35,5 @@ public class Category extends Auditable {
 	@Column(name = "description")
 	private String description;
 
-	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-	@JsonBackReference
-	private List<Book> books;
 
 }

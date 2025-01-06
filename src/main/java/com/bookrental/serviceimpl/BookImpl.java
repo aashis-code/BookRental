@@ -12,13 +12,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,7 +33,6 @@ import com.bookrental.exceptions.FileUploadFailException;
 import com.bookrental.exceptions.ResourceAlreadyExist;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.CoustomBeanUtils;
-import com.bookrental.helper.CustomPagination;
 import com.bookrental.helper.ExcelHelper;
 import com.bookrental.model.Author;
 import com.bookrental.model.Book;
@@ -120,8 +120,9 @@ public class BookImpl implements BookService {
 	
 	@Override
 	public PaginatedResponse getPaginatedBookList(FilterRequest filterRequest) {
-		Map<String, Object> object = CustomPagination.getPaginatedObject(filterRequest);
-		Page<Book> response = bookRepo.findByDeleted(object.get("keyword").toString(), (LocalDate)object.get("startDate"), (LocalDate)object.get("endDate"), Boolean.FALSE, (Pageable) object.get("pageable"));
+		Sort sort = Sort.by(Sort.Direction.fromString(filterRequest.getSortDir()),filterRequest.getOrderBy());
+		Pageable pageable = PageRequest.of(filterRequest.getPageNumber(), filterRequest.getPageSize(), sort);
+	    Page<Map<String, Object>> response = bookRepo.filterBookAndPagination(filterRequest.getKeyword(), filterRequest.getStartDate(),filterRequest.getEndDate(), Boolean.FALSE, pageable);
 		return PaginatedResponse.builder().content(response.getContent())
 				.totalElements(response.getTotalElements()).currentPageIndex(response.getNumber())
 				.numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();

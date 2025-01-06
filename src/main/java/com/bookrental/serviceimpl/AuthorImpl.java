@@ -1,12 +1,12 @@
 package com.bookrental.serviceimpl;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import com.bookrental.dto.AuthorDto;
@@ -15,7 +15,6 @@ import com.bookrental.dto.PaginatedResponse;
 import com.bookrental.exceptions.ResourceAlreadyExist;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.CoustomBeanUtils;
-import com.bookrental.helper.CustomPagination;
 import com.bookrental.model.Author;
 import com.bookrental.repository.AuthorRepo;
 import com.bookrental.service.AuthorService;
@@ -64,8 +63,9 @@ public class AuthorImpl implements AuthorService {
 
 	@Override
 	public PaginatedResponse getPaginatedAuthorList(FilterRequest filterRequest) {
-		Map<String, Object> object = CustomPagination.getPaginatedObject(filterRequest);
-		Page<Author> response = authorRepo.findByDeleted(object.get("keyword").toString(), (LocalDateTime)object.get("startDate"), (LocalDateTime)object.get("endDate"), Boolean.FALSE, (Pageable) object.get("pageable"));
+		Sort sort = Sort.by(Sort.Direction.fromString(filterRequest.getSortDir()),filterRequest.getOrderBy());
+		Pageable pageable = PageRequest.of(filterRequest.getPageNumber(), filterRequest.getPageSize(), sort);
+		Page<Map<String, Object>> response = authorRepo.filterAuthorPaginated(filterRequest.getKeyword(), filterRequest.getStartDate(), filterRequest.getEndDate(), Boolean.FALSE, pageable);
 		return PaginatedResponse.builder().content(response.getContent())
 				.totalElements(response.getTotalElements()).currentPageIndex(response.getNumber())
 				.numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();

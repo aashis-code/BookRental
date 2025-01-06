@@ -28,7 +28,7 @@ public class MemberDto {
 	private String password;
 
 	@Size(min = 10, max = 10, message = "Phone number must consist 10 digits.")
-	private String mobileNo;
+	private String mobileNumber;
 
 	private String address;
 

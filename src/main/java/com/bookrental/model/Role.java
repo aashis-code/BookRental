@@ -38,8 +38,5 @@ public class Role extends Auditable  {
 	
 	@Column(name = "description")
 	private String description;
-	
-	@ManyToMany(mappedBy = "roles")
-	List<Member> members;
 
 }

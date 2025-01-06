@@ -45,7 +45,7 @@ public class Member extends Auditable  {
 	private String name;
 
 	@Column(name = "mobile_number")
-	private String mobileNo;
+	private String mobileNumber;
 
 	@Column(name = "address")
 	private String address;
@@ -53,11 +53,7 @@ public class Member extends Auditable  {
 	@Column(name = "password")
 	private String password;
 
-	@OneToMany(mappedBy = "member")
-	@JsonBackReference
-	private List<BookTransaction> bookTransactions;
-
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "member_role", joinColumns = @JoinColumn(name = "memberId", foreignKey = @ForeignKey(name = "FK_member_role_member")), inverseJoinColumns = @JoinColumn(name = "roleId", foreignKey = @ForeignKey(name = "FK_member_role_role")))
+	@JoinTable(name = "member_role", joinColumns = @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "FK_member_role_member")), inverseJoinColumns = @JoinColumn(name = "role_id", foreignKey = @ForeignKey(name = "FK_member_role_role")))
 	private List<Role> roles;
 }

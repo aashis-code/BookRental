@@ -1,28 +1,22 @@
 package com.bookrental.serviceimpl;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.bookrental.dto.FilterRequest;
 import com.bookrental.dto.MemberDto;
 import com.bookrental.dto.PaginatedResponse;
-import com.bookrental.exceptions.ResourceAlreadyExist;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.CoustomBeanUtils;
-import com.bookrental.helper.CustomPagination;
-import com.bookrental.model.Book;
 import com.bookrental.model.Member;
 import com.bookrental.model.Role;
 import com.bookrental.repository.MemberRepo;
@@ -97,13 +91,10 @@ public class MemberImpl implements MemberService {
 
 	@Override
 	public PaginatedResponse getPaginatedMemberList(FilterRequest filterRequest) {
-		Map<String, Object> object = CustomPagination.getPaginatedObject(filterRequest);
-		Page<Member> response = memberRepo.findByDeleted(object.get("keyword").toString(), (LocalDate)object.get("startDate"), (LocalDate)object.get("endDate"), Boolean.FALSE, (Pageable) object.get("pageable"));
-		return PaginatedResponse.builder().content(response.getContent().stream().map(member ->{
-			MemberDto memberDto = new MemberDto();
-			CoustomBeanUtils.copyNonNullProperties(member, memberDto);
-			return memberDto;
-		}).collect(Collectors.toList()))
+		Sort sort = Sort.by(Sort.Direction.fromString(filterRequest.getSortDir()),filterRequest.getOrderBy());
+		Pageable pageable = PageRequest.of(filterRequest.getPageNumber(), filterRequest.getPageSize(), sort);
+		Page<Map<String, Object>> response = memberRepo.filterMemberPaginated(filterRequest.getKeyword(), filterRequest.getStartDate(), filterRequest.getEndDate(), Boolean.FALSE, pageable);
+		return PaginatedResponse.builder().content(response.getContent())
 				.totalElements(response.getTotalElements()).currentPageIndex(response.getNumber())
 				.numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();
 

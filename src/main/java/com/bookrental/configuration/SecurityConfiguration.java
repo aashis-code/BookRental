@@ -14,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.bookrental.exceptions.UnAuthorizedException;
 import com.bookrental.security.JwtAuthenticationFilter;
 import com.bookrental.security.MemberDetailsService;
 
@@ -39,7 +38,7 @@ public class SecurityConfiguration {
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll()
-//                .requestMatchers(SWAGGER_URLS).permitAll()
+                .requestMatchers(SWAGGER_URLS).permitAll()
 //                .requestMatchers("/api/member/**").hasAuthority("ROLE_LIBRARIAN")
                 .anyRequest().permitAll());
 //        http.exceptionHandling( ex-> new UnAuthorizedException("You are unauthorized to access."));

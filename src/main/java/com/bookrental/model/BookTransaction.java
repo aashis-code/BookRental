@@ -51,17 +51,12 @@ public class BookTransaction extends Auditable{
 	@Column(name = "rent_status")
 	private RentType rentStatus;
 
-	@Column(name = "active_close")
-	private Boolean activeClosed;
-
 	@ManyToOne
-	@JoinColumn(name = "memberId", foreignKey = @ForeignKey(name = "FK_bookTransaction_member"))
-	@JsonManagedReference
+	@JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "FK_bookTransaction_member"))
 	private Member member;
 
 	@ManyToOne
-	@JoinColumn(name = "bookId", foreignKey = @ForeignKey(name = "FK_bookTransaction_book"))
-	@JsonManagedReference
+	@JoinColumn(name = "book_id", foreignKey = @ForeignKey(name = "FK_bookTransaction_book"))
 	private Book book;
 
 }
