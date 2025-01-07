@@ -3,11 +3,11 @@ spring:
   application:
     name: BOOK_RENTAL
   datasource:
-        url: jdbc:postgresql://dpg-ctu7lmjv2p9s738pf0i0-a.oregon-postgres.render.com/book_rental_nw1l
+        url: jdbc:postgresql://dpg-ctul09tumphs73ep91mg-a.singapore-postgres.render.com/bookrental_60b5
 #        url: jdbc:postgresql://localhost:5432/Book-Rental
-        username: book_rental_nw1l_user
+        username: demobookrental
 #        username: postgres
-        password: CrG0RCkG1g5WmBP5qWF2j8FuLFISX70c
+        password: sRZoaz4Y9gU9GtCeUKUmk9EDNt34NNBY
 #        password: admin
         driverClassName: org.postgresql.Driver
   servlet:
