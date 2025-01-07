@@ -17,13 +17,13 @@ public class BookAddRequest {
 
 	private Integer id;
 
-	@Size(min = 3, max = 20, message = "Book name must be 3 to 20 characters long.")
+	@Size(min = 3, max = 30, message = "Book name must be 3 to 30 characters long.")
 	private String name;
 
 	@Min(value = 1, message = "Book must at least contain 1 page.")
 	private Integer numberOfPages;
 
-	@Pattern(regexp = "^[0-9]{13}$", message = "Enter valid ISBN.")
+	@Pattern(regexp = "^\\d{13}$", message = "Enter valid ISBN.")
 	private String isbn;
 
 	@Min(value = 0, message = "Rating must be not less than zero.")

@@ -2,6 +2,7 @@ package com.bookrental.controller;
 
 import com.bookrental.dto.RoleDto;
 import com.bookrental.helper.ResponseObject;
+import com.bookrental.helper.pagination.PaginationRequest;
 import com.bookrental.service.RoleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +33,8 @@ public class RoleController extends BaseController {
     }
     
 	@GetMapping("/paginated")
-	public ResponseObject getPagenatedRoles(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo, @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
-		return getSuccessResponse("Successfully fetched paginated data.", roleService.getPaginatedRoleList(pageNo, pageSize));
+	public ResponseObject getPaginatedRoles(@RequestBody PaginationRequest paginationRequest) {
+		return getSuccessResponse("Successfully fetched paginated data.", roleService.getPaginatedRoleList(paginationRequest.getPage(), paginationRequest.getSize()));
 	}
 
     @DeleteMapping("/{memberId}")

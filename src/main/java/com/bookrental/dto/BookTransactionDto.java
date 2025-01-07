@@ -21,7 +21,7 @@ public class BookTransactionDto {
     private Integer bookId;
 
     @Min(value = 1, message = "Rent duration must be at least 1 day long.")
-    private Integer rentDuration;
+    private Integer rentDuration=10;
 
     @Value("${false}")
     private Boolean toReturn;

@@ -57,6 +57,12 @@ public class GlobalExceptionHandler {
 	}
 
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(AppException.class)
+	public ResponseObject appException(ResourceNotFoundException ex) {
+		return ResponseObject.builder().status(false).message(ex.getMessage()).data("").build();
+	}
+
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(ResourceAlreadyExist.class)
 	public ResponseObject resourceAlreadyExistException(ResourceAlreadyExist ex) {
 		return ResponseObject.builder().status(false).message(ex.getMessage()).data("").build();

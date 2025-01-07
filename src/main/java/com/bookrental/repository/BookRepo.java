@@ -47,14 +47,16 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
 	
 	List<Book> findAllByDeleted(Boolean deleted);
 	
-    @Query(value = "select id, name, isbn,number_of_pages,rating, photo, stock_count, created_by , to_char(created_date, 'YYYY-MM-DD HH24:MI:SS') as created_date, \r\n"
-    		+ "last_modified_by, to_char(modified_date, 'YYYY-MM-DD HH24:MI:SS') as last_modified_date from book where name ilike %?1%\r\n"
-    		+ "and created_date between coalesce(?2, created_date) and coalesce(?3, created_date) and (?4 is null or deleted = ?4)", nativeQuery = true)
+    @Query(value = "select id, name, isbn,number_of_pages,published_date, rating, photo, stock_count, created_by , to_char(created_date, 'YYYY-MM-DD HH:MI:SS') as created_date,\n" +
+			"to_char(modified_date, 'YYYY-MM-DD HH:MI:SS') as last_modified_date from book where name ilike concat('%',?1,'%')\n" +
+			"and created_date between coalesce(?2, created_date) and coalesce(?3, created_date) and (?4 is null or deleted = ?4)\n" +
+			"order by (case when ?5 is not null then ?5 end) asc", nativeQuery = true)
 	Page<Map<String, Object>> filterBookAndPagination(
 			                   String keyword,
 			                   LocalDate startDate,
 			                   LocalDate endDate,
 	                           Boolean deleted,
+							   String orderBy,
 	                           Pageable pageable);
 
 	

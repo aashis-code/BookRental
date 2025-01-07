@@ -1,0 +1,31 @@
+#DATABASE SETUP
+spring:
+  application:
+    name: BOOK_RENTAL
+  datasource:
+    url: jdbc:postgresql://localhost:5432/Book-Rental
+    username: postgres
+    password: admin
+    driverClassName: org.postgresql.Driver
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  #HIBERNATE CONFIGURATION
+  jpa:
+    properties:
+      hibenate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate.ddl-auto: update
+    show-sql: true
+#JWT TOKEN
+security:
+  jwt:
+    secret-key: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
+    expiration-time: 3600000 # 1 hour in milliseconds
+
+server:
+  port: 8080  # Use Render's PORT environment variable; fallback to 8080 if not set
+  address: 0.0.0.0    # Bind to all available interfaces for external access
+
+
+

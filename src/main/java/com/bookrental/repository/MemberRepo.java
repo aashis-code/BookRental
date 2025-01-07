@@ -42,7 +42,7 @@ public interface MemberRepo extends JpaRepository<Member, Integer> {
 	
 	@Query(value = "select id, name, email, mobile_number, address , created_by , to_char(created_date, 'YYYY-MM-DD HH24:MI:SS') as created_date,"
 			+ "last_modified_by, to_char(modified_date, 'YYYY-MM-DD HH24:MI:SS') as last_modified_date from member where "
-			+ "(?1 is null or name ilike %?1%) "
+			+ "(?1 is null or name ilike concat('%',?1,'%')) "
 			+ "and created_date between coalesce(?2, created_date) and coalesce(?3, created_date) and (?4 is null or deleted = ?4)", 
 			nativeQuery = true)
 	Page<Map<String, Object>> filterMemberPaginated(

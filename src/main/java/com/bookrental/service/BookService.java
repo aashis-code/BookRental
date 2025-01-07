@@ -1,18 +1,16 @@
 package com.bookrental.service;
 
-import java.io.ByteArrayInputStream;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.bookrental.dto.BookDto;
 import com.bookrental.dto.BookResponse;
-import com.bookrental.dto.FilterRequest;
 import com.bookrental.dto.ListOfBookRequest;
 import com.bookrental.dto.PaginatedResponse;
+import com.bookrental.helper.pagination.BookPaginationRequest;
+import com.bookrental.helper.pagination.PaginationRequest;
 import com.bookrental.model.Book;
-
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public interface BookService {
@@ -21,7 +19,7 @@ public interface BookService {
 
 	List<BookResponse> getAllBooks();
 
-	PaginatedResponse getPaginatedBookList(FilterRequest filterRequest);
+	PaginatedResponse getPaginatedBookList(BookPaginationRequest paginationRequest);
 
 	Book getBookById(Integer bookId);
 
@@ -31,5 +29,5 @@ public interface BookService {
 	
 	List<BookDto> getBooksByCategory(Integer categoryId);
 	
-	List<Book> getBooksByAuhtor(Integer authorId);
+	List<BookDto> getBooksByAuthor(Integer authorId);
 }

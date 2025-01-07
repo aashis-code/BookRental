@@ -1,29 +1,26 @@
 package com.bookrental.service;
 
-import java.util.List;
-
+import com.bookrental.dto.CategoryDto;
+import com.bookrental.dto.PaginatedResponse;
+import com.bookrental.helper.pagination.PaginationRequest;
+import com.bookrental.model.Category;
 import org.springframework.stereotype.Service;
 
-import com.bookrental.dto.CategoryDto;
-import com.bookrental.dto.FilterRequest;
-import com.bookrental.dto.PaginatedResponse;
-import com.bookrental.model.Author;
-import com.bookrental.model.Category;
+import java.util.List;
 
 
 @Service
 public interface CategoryService {
-	
-	boolean categorySaveAndUpdate(CategoryDto categoryDto);
-	
-	Category getCategoryById(Integer categoryId);
-	
-	List<Category> getAllCategory();
-	
-	PaginatedResponse getPaginatedCategoryList(FilterRequest filterRequest);
-	
-	void deleteCategoryById(Integer bookId);
-	
-	
+
+    boolean categorySaveAndUpdate(CategoryDto categoryDto);
+
+    Category getCategoryById(Integer categoryId);
+
+    List<Category> getAllCategory();
+
+    PaginatedResponse getPaginatedCategoryList(PaginationRequest paginationRequest);
+
+    void deleteCategoryById(Integer bookId);
+
 
 }

@@ -1,13 +1,11 @@
 package com.bookrental.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
-import com.bookrental.dto.FilterRequest;
 import com.bookrental.dto.MemberDto;
 import com.bookrental.dto.PaginatedResponse;
-import com.bookrental.model.Member;
+import com.bookrental.helper.pagination.PaginationRequest;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public interface MemberService {
@@ -18,7 +16,7 @@ public interface MemberService {
 	
 	List<MemberDto> getAllMembers();
 	
-	PaginatedResponse getPaginatedMemberList(FilterRequest filterRequest);
+	PaginatedResponse getPaginatedMemberList(PaginationRequest paginationRequest);
 
 	void deleteMember(Integer memberId);
 	

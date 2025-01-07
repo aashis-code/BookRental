@@ -21,9 +21,11 @@ public interface AuthorRepo extends JpaRepository<Author, Integer> {
 
 	List<Author> findByDeleted(Boolean deleted);
 
-	@Query(value = "select * from author where name ilike %?1% and "
-			+ "created_date between coalesce(?2, created_date) and "
-			+ "coalesce(?3, created_date) and (?4 is null or deleted = ?4)", 
+	@Query(value = "SELECT id, name, email, mobile_number, to_char(created_date, 'YYYY-MM-DD HH:MI:SS') as created_date, \n" +
+			"to_char(created_date, 'YYYY-MM-DD HH:MI:SS') as modified_date FROM author WHERE \n" +
+			"(:1 IS NULL OR name ILIKE CONCAT('%', ?1, '%')) \n" +
+			" AND created_date BETWEEN COALESCE(?2, created_date) AND COALESCE(?3, created_date)\n" +
+			" AND (?4 IS NULL OR deleted = ?4)",
 			nativeQuery = true)
 	Page<Map<String, Object>> filterAuthorPaginated(String keyword, LocalDate startDate, LocalDate endDate, Boolean deleted,
 			Pageable pageable);
