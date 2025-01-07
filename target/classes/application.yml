@@ -3,9 +3,12 @@ spring:
   application:
     name: BOOK_RENTAL
   datasource:
-        url: jdbc:postgresql://localhost:5432/Book-Rental
-        username: postgres
-        password: admin
+        url: jdbc:postgresql://dpg-ctu7lmjv2p9s738pf0i0-a.oregon-postgres.render.com/book_rental_nw1l
+#        url: jdbc:postgresql://localhost:5432/Book-Rental
+        username: book_rental_nw1l_user
+#        username: postgres
+        password: CrG0RCkG1g5WmBP5qWF2j8FuLFISX70c
+#        password: admin
         driverClassName: org.postgresql.Driver
   servlet:
     multipart:
@@ -23,8 +26,7 @@ security:
     secret-key: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
     expiration-time: 3600000 # 1 hour in milliseconds
 
-server:
-  port: 8080
+
 
 
 
