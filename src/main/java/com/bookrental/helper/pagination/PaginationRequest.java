@@ -21,7 +21,7 @@ public class PaginationRequest extends DateRangeFilter {
     @Min(value = 1, message = "Request per page cannot be less than 1.")
     private int size = 1;
 
-    String searchFeild;
+    String searchField;
 
     Boolean isDeleted = Boolean.FALSE;
 
