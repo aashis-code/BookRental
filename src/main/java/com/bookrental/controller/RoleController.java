@@ -4,6 +4,7 @@ import com.bookrental.dto.RoleDto;
 import com.bookrental.helper.ResponseObject;
 import com.bookrental.helper.pagination.PaginationRequest;
 import com.bookrental.service.RoleService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/role")
 @RequiredArgsConstructor
+@Tag(name = "Role", description = "Endpoints for managing Role related activities.")
 public class RoleController extends BaseController {
 
 
