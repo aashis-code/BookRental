@@ -17,14 +17,14 @@ import com.bookrental.repository.CategoryRepo;
 import com.bookrental.service.BookService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.compress.compressors.FileNameUtil;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -108,7 +108,7 @@ public class BookImpl implements BookService {
 
     @Override
     public PaginatedResponse getPaginatedBookList(BookPaginationRequest paginationRequest) {
-        Page<Map<String, Object>> response = bookRepo.filterBookAndPagination(paginationRequest.getSearchFeild(), paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getOrderBy().toString(), paginationRequest.getPageable());
+        Page<Map<String, Object>> response = bookRepo.filterBookAndPagination(paginationRequest.getSearchField(), paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getOrderBy().toString(), paginationRequest.getPageable());
         return PaginatedResponse.builder().content(response.getContent())
                 .totalElements(response.getTotalElements()).currentPageIndex(response.getNumber())
                 .numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();
@@ -224,4 +224,22 @@ public class BookImpl implements BookService {
             return bookDto;
         }).toList();
     }
+
+    @Override
+    public void getImageByBookId(HttpServletResponse response, Integer bookId) {
+        if(bookId==null){
+            throw new AppException("Please, Provide Book Id.");
+        }
+        Book book = this.bookRepo.findById(bookId).orElseThrow(() -> new ResourceNotFoundException("BookId", String.valueOf(bookId)));
+        if(book.getPhoto()==null){
+            throw new AppException(String.format("Book does not have a photo of bookId %s", bookId));
+        }
+        String path = book.getPhoto();
+        try {
+            FileUtils.copyFile(new File(path), response.getOutputStream());
+        }  catch (IOException e) {
+            throw new AppException("Failure in fetching image.");
+        }
+    }
+
 }

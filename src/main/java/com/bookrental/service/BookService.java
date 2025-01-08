@@ -30,4 +30,6 @@ public interface BookService {
 	List<BookDto> getBooksByCategory(Integer categoryId);
 	
 	List<BookDto> getBooksByAuthor(Integer authorId);
+
+	void getImageByBookId(HttpServletResponse response, Integer bookId);
 }

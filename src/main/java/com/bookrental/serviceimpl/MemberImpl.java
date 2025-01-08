@@ -81,7 +81,7 @@ public class MemberImpl implements MemberService {
 
     @Override
     public PaginatedResponse getPaginatedMemberList(PaginationRequest paginationRequest) {
-        Page<Map<String, Object>> response = memberRepo.filterMemberPaginated(paginationRequest.getSearchFeild(), paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getPageable());
+        Page<Map<String, Object>> response = memberRepo.filterMemberPaginated(paginationRequest.getSearchField(), paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getPageable());
         return PaginatedResponse.builder().content(response.getContent()).totalElements(response.getTotalElements()).currentPageIndex(response.getNumber()).numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();
 
     }

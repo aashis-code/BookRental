@@ -57,7 +57,7 @@ public class CategoryImpl implements CategoryService {
 
     @Override
     public PaginatedResponse getPaginatedCategoryList(PaginationRequest paginationRequest) {
-        Page<Map<String, Object>> response = categoryRepo.filterCategoryPaginated(paginationRequest.getSearchFeild(), paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getPageable());
+        Page<Map<String, Object>> response = categoryRepo.filterCategoryPaginated(paginationRequest.getSearchField(), paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getPageable());
         return PaginatedResponse.builder().content(response.getContent()).totalElements(response.getTotalElements()).currentPageIndex(response.getNumber()).numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();
 
     }
