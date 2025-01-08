@@ -53,6 +53,7 @@ com\bookrental\dto\BookAddRequest.class
 com\bookrental\security\JwtService.class
 com\bookrental\security\MemberDetailsService.class
 com\bookrental\service\AuthenticationSevice.class
+com\bookrental\configuration\OpenApiConfiguration.class
 com\bookrental\model\Role.class
 com\bookrental\dto\RoleDto.class
 com\bookrental\model\BookTransaction.class
