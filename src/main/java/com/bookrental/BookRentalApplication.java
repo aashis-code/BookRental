@@ -15,9 +15,6 @@ import io.swagger.v3.oas.annotations.servers.Server;
 @SpringBootApplication
 @EntityScan
 @EnableJpaRepositories
-@OpenAPIDefinition(info = @Info(title = "BOOK-RENTAL", description = "It is sbcds.", version = "v1.0"), servers = {
-		@Server(url = "http://localhost:8080", description = "locahost url.") })
-@SecurityScheme(scheme = "bearer", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER, name = "bookRental")
 public class BookRentalApplication {
 
 	public static void main(String[] args) {

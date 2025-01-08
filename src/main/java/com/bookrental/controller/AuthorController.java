@@ -6,12 +6,14 @@ import com.bookrental.helper.constants.MessageConstants;
 import com.bookrental.helper.pagination.PaginationRequest;
 import com.bookrental.service.AuthorService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/author")
 @SecurityRequirement(name = "bookRental")
+@Tag(name = "Author", description = "Endpoints for managing Author related activities.")
 public class AuthorController extends BaseController {
 
     private final AuthorService authorService;
