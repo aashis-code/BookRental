@@ -4,11 +4,13 @@ import com.bookrental.dto.CategoryDto;
 import com.bookrental.helper.ResponseObject;
 import com.bookrental.helper.pagination.PaginationRequest;
 import com.bookrental.service.CategoryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/category")
+@Tag(name = "Category", description = "Endpoints for managing Category related activities.")
 public class CategoryController extends BaseController {
 
     private final CategoryService categoryService;

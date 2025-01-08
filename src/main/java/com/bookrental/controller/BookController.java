@@ -4,12 +4,14 @@ import com.bookrental.dto.ListOfBookRequest;
 import com.bookrental.helper.ResponseObject;
 import com.bookrental.helper.pagination.BookPaginationRequest;
 import com.bookrental.service.BookService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/book")
+@Tag(name = "Book", description = "Endpoints for managing Book related activities.")
 public class BookController extends BaseController {
 
     private final BookService bookService;
