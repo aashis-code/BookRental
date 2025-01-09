@@ -1,5 +1,6 @@
 package com.bookrental.configuration;
 
+import com.bookrental.security.JwtAuthenticationEntryPoint;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,18 +25,20 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
-//@EnableWebSecurity
+@EnableWebSecurity
 @EnableMethodSecurity( prePostEnabled = true)
 public class SecurityConfiguration {
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 	private final MemberDetailsService memberDetailsService;
+	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	
 	private static final String[] SWAGGER_URLS = {"/api/v1/auth/**","/v3/**","/v3/api-docs.yaml","/swagger-ui.html","/swagger-ui/**"};
 
-	public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, MemberDetailsService memberDetailsService) {
+	public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, MemberDetailsService memberDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
 		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
 		this.memberDetailsService = memberDetailsService;
+		this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
 	}
 
 	@Bean
@@ -44,11 +48,12 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers(SWAGGER_URLS).permitAll()
-//                .requestMatchers("/api/member/**").hasAuthority("ROLE_LIBRARIAN")
-                .anyRequest().permitAll());
-//        http.exceptionHandling( ex-> new UnAuthorizedException("You are unauthorized to access."));
+                .anyRequest().authenticated());
+        http.exceptionHandling(exceptionHandling -> exceptionHandling
+				.authenticationEntryPoint(jwtAuthenticationEntryPoint) // Use custom entry point
+		);
         http.authenticationProvider(authenticationProvider());
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);//						.anyRequest().permitAll())
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
 	}
 
