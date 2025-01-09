@@ -3,12 +3,12 @@ spring:
   application:
     name: BOOK_RENTAL
   datasource:
-        url: jdbc:postgresql://dpg-ctul09tumphs73ep91mg-a.singapore-postgres.render.com/bookrental_60b5
-#        url: jdbc:postgresql://localhost:5432/Book-Rental
-        username: demobookrental
-#        username: postgres
-        password: sRZoaz4Y9gU9GtCeUKUmk9EDNt34NNBY
-#        password: admin
+#        url: jdbc:postgresql://dpg-ctul09tumphs73ep91mg-a.singapore-postgres.render.com/bookrental_60b5
+        url: jdbc:postgresql://localhost:5432/Book-Rental
+#        username: demobookrental
+        username: postgres
+#        password: sRZoaz4Y9gU9GtCeUKUmk9EDNt34NNBY
+        password: admin
         driverClassName: org.postgresql.Driver
   servlet:
     multipart:
@@ -19,7 +19,19 @@ spring:
             hibenate:
                dialect: org.hibernate.dialect.PostgreSQLDialect
         hibernate.ddl-auto: update
-        show-sql: true    	
+        show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: aashispandey2080@gmail.com
+    password: vmqb vica gvtt tsmd
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 #JWT TOKEN
 security:
   jwt:
@@ -28,6 +40,11 @@ security:
 springdoc:
   override-with-generic-response: false
 
+# Map custom folder as static resources
+web:
+  resources:
+   static-locations:
+    classpath: images/
 
 
 

@@ -1,5 +1,7 @@
 package com.bookrental.configuration;
 
+import com.bookrental.exceptions.UnAuthorizedException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
