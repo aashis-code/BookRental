@@ -17,6 +17,7 @@ com\bookrental\security\LoginResponse$LoginResponseBuilder.class
 com\bookrental\helper\pagination\PaginationResponse$PaginationResponseBuilder.class
 com\bookrental\repository\RoleRepo.class
 com\bookrental\service\MemberService.class
+com\bookrental\security\JwtAuthenticationEntryPoint.class
 com\bookrental\helper\pagination\PaginationResponse.class
 com\bookrental\helper\RentType.class
 com\bookrental\model\BaseEntityDelete.class

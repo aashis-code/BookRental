@@ -57,6 +57,7 @@ C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrenta
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\repository\MemberRepo.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\repository\RoleRepo.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\security\CustomPermissionEvaluator.java
+C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\security\JwtAuthenticationEntryPoint.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\security\JwtAuthenticationFilter.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\security\JwtService.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\security\LoginMemberDto.java
