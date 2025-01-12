@@ -11,7 +11,9 @@ C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrenta
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\controller\BookController.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\controller\BookTransactionController.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\controller\CategoryController.java
+C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\controller\GenericController.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\controller\MemberController.java
+C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\controller\PermissionController.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\controller\RoleController.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\dto\AssignRoleDto.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\dto\AuthorDto.java
@@ -22,6 +24,7 @@ C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrenta
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\dto\BookTransactionResponse.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\dto\CategoryDto.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\dto\ListOfBookRequest.java
+C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\dto\ListOfIdDto.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\dto\MemberDto.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\dto\PaginatedResponse.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\dto\RoleDto.java
@@ -48,13 +51,19 @@ C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrenta
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\model\BookTransaction.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\model\Category.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\model\Member.java
+C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\model\Permission.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\model\Role.java
+C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\model\RolePermissionMapping.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\modelmapper\BookModelMapper.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\repository\AuthorRepo.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\repository\BookRepo.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\repository\BookTransactionRepo.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\repository\CategoryRepo.java
+C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\repository\GenericRepo.java
+C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\repository\GenericSoftDeleteRepo.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\repository\MemberRepo.java
+C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\repository\PermissionRepo.java
+C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\repository\RolePermissionRepo.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\repository\RoleRepo.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\security\CustomPermissionEvaluator.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\security\JwtAuthenticationEntryPoint.java
@@ -69,6 +78,7 @@ C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrenta
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\service\BookService.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\service\BookTransactionService.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\service\CategoryService.java
+C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\service\GenericService.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\service\MemberService.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\service\RoleService.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\serviceimpl\AuthenticationImpl.java
@@ -76,5 +86,7 @@ C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrenta
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\serviceimpl\BookImpl.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\serviceimpl\BookTransactionImpl.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\serviceimpl\CategoryImpl.java
+C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\serviceimpl\GenericServiceImpl.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\serviceimpl\MemberImpl.java
+C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\serviceimpl\PermissionServiceImpl.java
 C:\Users\Aashis Pandey\Desktop\BookRental\BookRental\src\main\java\com\bookrental\serviceimpl\RoleImpl.java

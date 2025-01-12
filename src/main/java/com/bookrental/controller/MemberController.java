@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,15 +37,17 @@ public class MemberController extends BaseController {
             }
     )
     @PostMapping("")
+    @PreAuthorize("hasPermission(#memberDto,'remove_librarian')")
     public ResponseObject addMember(@RequestBody @Valid MemberDto memberDto) {
 
         return new ResponseObject(true, "Success on member entity operation !!", memberService.saveAndUpdateMember(memberDto));
     }
 
     @GetMapping("/{memberId}")
+    @PreAuthorize("hasPermission(#memberId,'MEMBER','fetch_profile')")
     public ResponseObject getMemberById(@PathVariable Integer memberId) {
-
-        return getSuccessResponse("Success !!", memberService.getMemberById(memberId));
+        MemberDto member = memberService.getMemberById(memberId);
+        return getSuccessResponse("Success !!", member);
     }
 
     @GetMapping("")

@@ -18,8 +18,11 @@ spring:
         properties:
             hibenate:
                dialect: org.hibernate.dialect.PostgreSQLDialect
+               batch-size: 50
+               order_inserts: true
+               order_updates: true
         hibernate.ddl-auto: update
-        show-sql: true    	
+        show-sql: true
 #JWT TOKEN
 security:
   jwt:
