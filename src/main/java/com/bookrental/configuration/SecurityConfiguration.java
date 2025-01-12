@@ -25,14 +25,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
-@EnableWebSecurity
+//@EnableWebSecurity
 @EnableMethodSecurity( prePostEnabled = true)
 public class SecurityConfiguration {
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 	private final MemberDetailsService memberDetailsService;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-	
+
 	private static final String[] SWAGGER_URLS = {"/api/v1/auth/**","/v3/**","/v3/api-docs.yaml","/swagger-ui.html","/swagger-ui/**"};
 
 	public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, MemberDetailsService memberDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {

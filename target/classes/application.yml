@@ -23,6 +23,18 @@ spring:
                order_updates: true
         hibernate.ddl-auto: update
         show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: aashispandey2080@gmail.com
+    password: vmqb vica gvtt tsmd
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 #JWT TOKEN
 security:
   jwt:
@@ -31,6 +43,11 @@ security:
 springdoc:
   override-with-generic-response: false
 
+# Map custom folder as static resources
+web:
+  resources:
+   static-locations:
+    classpath: images/
 
 
 
