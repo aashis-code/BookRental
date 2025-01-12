@@ -2,7 +2,6 @@ package com.bookrental.serviceimpl;
 
 import com.bookrental.dto.AuthorDto;
 import com.bookrental.dto.PaginatedResponse;
-import com.bookrental.exceptions.ResourceAlreadyExist;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.CoustomBeanUtils;
 import com.bookrental.helper.pagination.PaginationRequest;
@@ -58,7 +57,7 @@ public class AuthorImpl implements AuthorService {
 
     @Override
     public PaginatedResponse getPaginatedAuthorList(PaginationRequest paginationRequest) {
-        Page<Map<String, Object>> response = authorRepo.filterAuthorPaginated(paginationRequest.getSearchFeild(), paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getPageable());
+        Page<Map<String, Object>> response = authorRepo.filterAuthorPaginated(paginationRequest.getSearchField(), paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getPageable());
         return PaginatedResponse.builder().content(response.getContent())
                 .totalElements(response.getTotalElements()).currentPageIndex(response.getNumber())
                 .numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();

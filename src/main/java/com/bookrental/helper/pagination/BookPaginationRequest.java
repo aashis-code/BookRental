@@ -11,16 +11,16 @@ import lombok.Setter;
 @Setter
 public class BookPaginationRequest extends PaginationRequest{
 
-    int bookId;
+    Integer bookId;
 
-    int authorId;
+    Integer authorId;
 
-    int categoryId;
+    Integer categoryId;
 
-    int memberId;
+    Integer memberId;
 
     @Enumerated(EnumType.STRING)
-    private RentType rentStatus;
+    private RentType rentStatus=RentType.RENT;
 
     @Enumerated(EnumType.STRING)
     private OrderBy orderBy;

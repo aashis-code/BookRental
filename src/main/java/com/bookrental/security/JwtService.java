@@ -9,22 +9,23 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.bookrental.exceptions.AppException;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Encoders;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
 
-	@Value("${security.jwt.secret-key}")
-	private String secretKey;
+//	@Value("${security.jwt.secret-key}")
+	private final String secretKey = "3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b";
 
 	@Value("${security.jwt.expiration-time}")
 	private long jwtExpiration;
@@ -69,7 +70,19 @@ public class JwtService {
 	}
 
 	private Claims extractAllClaims(String token) {
-		return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
+		try{
+			return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
+		}catch(ExpiredJwtException e){
+			throw new AppException("Expired JWT token :"+ e.getMessage());
+		} catch(UnsupportedJwtException e){
+			throw new AppException("Jwt token not supported :" + e.getMessage());
+		} catch(MalformedJwtException e){
+			throw new AppException("Invalid JWT token :"+ e.getMessage());
+		} catch(SignatureException e){
+			throw new AppException("JWT signature validation failed :"+ e.getMessage());
+		} catch(IllegalArgumentException e){
+			throw new AppException("JWT token is null or empty :"+ e.getMessage());
+		}
 	}
 
 	private Key getSignInKey() {

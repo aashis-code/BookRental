@@ -4,12 +4,15 @@ import com.bookrental.dto.ListOfBookRequest;
 import com.bookrental.helper.ResponseObject;
 import com.bookrental.helper.pagination.BookPaginationRequest;
 import com.bookrental.service.BookService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/book")
+@Tag(name = "Book", description = "Endpoints for managing Book related activities.")
 public class BookController extends BaseController {
 
     private final BookService bookService;
@@ -60,6 +63,13 @@ public class BookController extends BaseController {
     @GetMapping("/by-author")
     public ResponseObject getAllBooksByAuthor(@RequestBody BookPaginationRequest requestPojo) {
         return getSuccessResponse("Books are successfully fetched !!", bookService.getBooksByAuthor(requestPojo.getAuthorId()));
+    }
+
+    @Operation(summary = "Fetch Image By BookId.")
+    @GetMapping("/image")
+    public  ResponseObject getAllBookImages(@RequestBody BookPaginationRequest requestPojo, HttpServletResponse response) {
+        bookService.getImageByBookId(response, requestPojo.getBookId());
+        return getSuccessResponse("Image fetched successfull !!",null);
     }
 
 }
