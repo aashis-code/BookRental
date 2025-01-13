@@ -2,26 +2,38 @@ package com.bookrental.serviceimpl;
 
 import com.bookrental.dto.AuthorDto;
 import com.bookrental.dto.PaginatedResponse;
+import com.bookrental.exceptions.AppException;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.CoustomBeanUtils;
 import com.bookrental.helper.pagination.PaginationRequest;
 import com.bookrental.model.Author;
 import com.bookrental.repository.AuthorRepo;
 import com.bookrental.service.AuthorService;
+import com.bookrental.validation.Update;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class AuthorImpl implements AuthorService {
 
     private AuthorRepo authorRepo;
 
-    public AuthorImpl(AuthorRepo authorRepo) {
+    private final Validator validator;
+    private Logger logger = LoggerFactory.getLogger(AuthorImpl.class);
+
+    public AuthorImpl(AuthorRepo authorRepo, Validator validator) {
         this.authorRepo = authorRepo;
+        this.validator = Validation.buildDefaultValidatorFactory().getValidator();
     }
 
     @Override
