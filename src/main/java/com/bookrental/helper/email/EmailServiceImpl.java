@@ -18,7 +18,7 @@ import java.io.File;
 
 @Service
 @RequiredArgsConstructor
-public class EmailServiceImpl implements EmailService {
+public class EmailServiceImpl<T> implements EmailService<T> {
 
     private final JavaMailSender mailSender;
 
@@ -46,16 +46,18 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public String sendMailWithAttachment(EmailDetails details, BookTransaction bookTransaction) {
+    public String sendMailWithAttachment(EmailDetails details, T t) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
 
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 
             Context context = new Context();
-            context.setVariable("bookTransaction", bookTransaction);
-//            String imageName = bookTransaction.getBook().getPhoto().substring(bookTransaction.getBook().getPhoto().lastIndexOf("\\")+1);
-            context.setVariable("imageName", bookTransaction.getBook().getPhoto().substring(bookTransaction.getBook().getPhoto().lastIndexOf("\\")+1));
+            context.setVariable("object", t);
+
+            if(t instanceof BookTransaction bookTransaction) {
+                context.setVariable("imageName", bookTransaction.getBook().getPhoto().substring(bookTransaction.getBook().getPhoto().lastIndexOf("\\")+1));
+            }
 
             String htmlContent = templateEngine.process(details.getAttachment(), context);
 
