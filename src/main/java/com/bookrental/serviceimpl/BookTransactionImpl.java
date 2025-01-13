@@ -36,7 +36,7 @@ public class BookTransactionImpl implements BookTransactionService {
 
     private final BookTransactionRepo bookTransactionRepo;
 
-    private final EmailService emailService;
+    private final EmailService<BookTransaction> emailService;
 
     // Renting book Operation
     @Override

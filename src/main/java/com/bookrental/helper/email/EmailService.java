@@ -1,10 +1,7 @@
 package com.bookrental.helper.email;
 
-import com.bookrental.model.Book;
-import com.bookrental.model.BookTransaction;
-
-public interface EmailService {
+public interface EmailService<T> {
 
     String sendSimpleMail(EmailDetails details);
-    String sendMailWithAttachment(EmailDetails details, BookTransaction bookTransaction);
+    String sendMailWithAttachment(EmailDetails details, T t);
 }

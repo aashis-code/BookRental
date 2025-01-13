@@ -4,6 +4,7 @@ import com.bookrental.dto.MemberDto;
 import com.bookrental.dto.PaginatedResponse;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.CoustomBeanUtils;
+import com.bookrental.helper.pagination.BookPaginationRequest;
 import com.bookrental.helper.pagination.PaginationRequest;
 import com.bookrental.model.Member;
 import com.bookrental.model.Role;
