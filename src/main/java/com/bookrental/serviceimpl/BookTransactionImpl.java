@@ -7,6 +7,8 @@ import com.bookrental.dto.PaginatedResponse;
 import com.bookrental.exceptions.AppException;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.RentType;
+import com.bookrental.helper.email.EmailDetails;
+import com.bookrental.helper.email.EmailService;
 import com.bookrental.helper.pagination.BookPaginationRequest;
 import com.bookrental.model.Book;
 import com.bookrental.model.BookTransaction;
@@ -33,6 +35,8 @@ public class BookTransactionImpl implements BookTransactionService {
     private final MemberRepo memberRepo;
 
     private final BookTransactionRepo bookTransactionRepo;
+
+    private final EmailService<BookTransaction> emailService;
 
     // Renting book Operation
     @Override
@@ -78,6 +82,11 @@ public class BookTransactionImpl implements BookTransactionService {
             BookTransaction bookTransaction = BookTransaction.builder().code(UUID.randomUUID().toString())
                     .fromDate(LocalDate.now()).toDate(LocalDate.now().plusDays(bookTransactionDto.getRentDuration()))
                     .rentStatus(RentType.RENT).member(member).book(book).build();
+            emailService.sendMailWithAttachment(EmailDetails.builder()
+                    .subject("You have rented book.")
+                    .recipient("aashisdev057@gmail.com")
+                    .attachment("email-template")
+                    .build(), bookTransaction);
             bookTransactionRepo.save(bookTransaction);
         }
         return true;

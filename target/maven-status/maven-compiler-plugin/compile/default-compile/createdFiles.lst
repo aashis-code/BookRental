@@ -7,6 +7,7 @@ com\bookrental\controller\CategoryController.class
 com\bookrental\audit\Auditable.class
 com\bookrental\helper\SortMethod.class
 com\bookrental\serviceimpl\RoleImpl.class
+com\bookrental\helper\email\EmailServiceImpl.class
 com\bookrental\repository\PermissionRepo.class
 com\bookrental\helper\ExcelHelper.class
 com\bookrental\helper\pagination\PaginationResponse$PaginationResponseBuilder.class
@@ -55,6 +56,7 @@ com\bookrental\configuration\Application.class
 com\bookrental\helper\ExcelHelper$1.class
 com\bookrental\repository\CategoryRepo.class
 com\bookrental\dto\CategoryDto.class
+com\bookrental\helper\email\EmailDetails.class
 com\bookrental\helper\ResponseObject.class
 com\bookrental\model\Role$RoleBuilder.class
 com\bookrental\security\LoginResponse$LoginResponseBuilder.class
@@ -66,6 +68,7 @@ com\bookrental\dto\PaginatedResponse$PaginatedResponseBuilder.class
 com\bookrental\controller\AuthorController.class
 com\bookrental\service\BookService.class
 com\bookrental\model\RolePermissionMapping.class
+com\bookrental\helper\email\EmailDetails$EmailDetailsBuilder.class
 com\bookrental\configuration\AuditConfiguration.class
 com\bookrental\exceptions\ResourceAlreadyExist.class
 com\bookrental\repository\MemberRepo.class
@@ -76,8 +79,10 @@ com\bookrental\model\Category.class
 com\bookrental\repository\GenericRepo.class
 com\bookrental\dto\BookTransactionDto.class
 com\bookrental\repository\GenericSoftDeleteRepo.class
+com\bookrental\controller\EmailController.class
 com\bookrental\configuration\SecurityConfiguration.class
 com\bookrental\dto\BookAddRequest.class
+com\bookrental\helper\email\EmailService.class
 com\bookrental\service\AuthenticationSevice.class
 com\bookrental\controller\GenericController.class
 com\bookrental\dto\RoleDto.class

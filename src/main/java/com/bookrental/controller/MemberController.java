@@ -2,9 +2,11 @@ package com.bookrental.controller;
 
 import com.bookrental.dto.AssignRoleDto;
 import com.bookrental.dto.MemberDto;
+import com.bookrental.dto.PasswordResetRequestDto;
 import com.bookrental.helper.ResponseObject;
 import com.bookrental.helper.pagination.PaginationRequest;
 import com.bookrental.service.MemberService;
+import com.bookrental.service.PasswordResetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,9 +23,11 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController extends BaseController {
 
     private final MemberService memberService;
+    private final PasswordResetService passwordResetService;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, PasswordResetService passwordResetService) {
         this.memberService = memberService;
+        this.passwordResetService = passwordResetService;
     }
 
     @Operation(
@@ -71,6 +75,16 @@ public class MemberController extends BaseController {
     @PostMapping("/assign-roles")
     public ResponseObject assignRolesToMember(@RequestBody AssignRoleDto assignRoleDto) {
         return getSuccessResponse("Successfully assigned roles !!", memberService.assignRoles(assignRoleDto.getMemberId(), assignRoleDto.getRoles()));
+    }
+
+    @PostMapping("/send-token")
+    public ResponseObject sendPasswordResetToken(@RequestBody PasswordResetRequestDto passwordResetRequestDto) {
+        return getSuccessResponse("Successfully send reset token.", this.passwordResetService.generateAndSendToken(passwordResetRequestDto));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseObject resetPassword(@RequestBody PasswordResetRequestDto passwordResetRequestDto) {
+        return getSuccessResponse("Successfully updated password.", this.passwordResetService.validateAndResetPassword(passwordResetRequestDto));
     }
 
 }
