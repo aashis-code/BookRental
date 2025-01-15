@@ -16,7 +16,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import com.bookrental.helper.ResponseObject;
 
-import ch.qos.logback.core.status.Status;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -58,7 +57,7 @@ public class GlobalExceptionHandler {
 
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(AppException.class)
-	public ResponseObject appException(ResourceNotFoundException ex) {
+	public ResponseObject appException(AppException ex) {
 		return ResponseObject.builder().status(false).message(ex.getMessage()).data("").build();
 	}
 

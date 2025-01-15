@@ -2,6 +2,7 @@ package com.bookrental.dto;
 
 import java.util.List;
 
+import com.bookrental.validation.ValidEmail;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -19,7 +20,7 @@ public class MemberDto {
 	private Integer id;
 
 	@Schema(description = "Username of the Member", required = true, example = "john_doe")
-	@Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Enter valid email address.")
+    @ValidEmail
 	private String email;
 
 	@Size(min = 3, max = 20, message = "Name must be 3 to 20 characters long.")

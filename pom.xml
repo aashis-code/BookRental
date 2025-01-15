@@ -35,11 +35,27 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.5.9</version>
+            <scope>compile</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
 
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -75,7 +91,7 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-        
+
         <!-- Springdoc OpenAPI for Swagger UI -->
         <dependency>
             <groupId>org.springdoc</groupId>
