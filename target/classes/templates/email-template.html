@@ -28,13 +28,13 @@
     <h1>Book Renting Confirmation</h1>
 
     <div>
-        <p>Dear <span th:text="${bookTransaction.getMember().getName()}"></span>,</p>
-        <p>Thank you for renting the book <strong th:text="${bookTransaction.getBook().getName()}"></strong>.</p>
+        <p>Dear <span th:text="${object.getMember().getName()}"></span>,</p>
+        <p>Thank you for renting the book <strong th:text="${object.getBook().getName()}"></strong>.</p>
 
         <img th:src="@{${imageName}}" alt="Book Image">
 
-        <p>We hope you enjoy reading <strong th:text="${bookTransaction.getBook().getName()}"></strong>.</p>
-        <p th:text="'You are expected to return before '+ ${bookTransaction.getToDate()}+'.' "></p>
+        <p>We hope you enjoy reading <strong th:text="${object.getBook().getName()}"></strong>.</p>
+        <p th:text="'You are expected to return before '+ ${object.getToDate()}+'.' "></p>
         <p>Thank you for using our service!</p>
     </div>
 </div>
