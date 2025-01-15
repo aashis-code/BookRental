@@ -3,12 +3,12 @@ spring:
   application:
     name: BOOK_RENTAL
   datasource:
-#        url: jdbc:postgresql://dpg-ctul09tumphs73ep91mg-a.singapore-postgres.render.com/bookrental_60b5
-        url: jdbc:postgresql://localhost:5432/Book-Rental
-#        username: demobookrental
-        username: postgres
-#        password: sRZoaz4Y9gU9GtCeUKUmk9EDNt34NNBY
-        password: admin
+        url: jdbc:postgresql://dpg-ctul09tumphs73ep91mg-a.singapore-postgres.render.com/bookrental_60b5
+#        url: jdbc:postgresql://localhost:5432/Book-Rental
+        username: demobookrental
+#        username: postgres
+        password: sRZoaz4Y9gU9GtCeUKUmk9EDNt34NNBY
+#        password: admin
         driverClassName: org.postgresql.Driver
   servlet:
     multipart:
