@@ -28,6 +28,7 @@ com\bookrental\exceptions\UnAuthorizedException.class
 com\bookrental\service\AuthorService.class
 com\bookrental\security\MemberDetails.class
 com\bookrental\repository\BookTransactionRepo.class
+com\bookrental\helper\oauth\CustomOauth2User.class
 com\bookrental\dto\BookDto.class
 com\bookrental\model\Member.class
 com\bookrental\modelmapper\BookModelMapper$1.class
