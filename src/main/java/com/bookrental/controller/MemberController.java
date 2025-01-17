@@ -41,7 +41,7 @@ public class MemberController extends BaseController {
             }
     )
     @PostMapping("")
-    @PreAuthorize("hasPermission(#memberDto,'remove_librarian')")
+//    @PreAuthorize("hasPermission(#memberDto,'remove_librarian')")
     public ResponseObject addMember(@RequestBody @Valid MemberDto memberDto) {
 
         return new ResponseObject(true, "Success on member entity operation !!", memberService.saveAndUpdateMember(memberDto));
@@ -54,17 +54,20 @@ public class MemberController extends BaseController {
         return getSuccessResponse("Success !!", member);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     @GetMapping("")
     public ResponseObject getAllMembers() {
 
         return getSuccessResponse("Success !!", memberService.getAllMembers());
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     @GetMapping("/paginated")
     public ResponseObject getPaginatedMemberList(@RequestBody PaginationRequest filterRequest) {
         return getSuccessResponse("Successfully fetched paginated data.", memberService.getPaginatedMemberList(filterRequest));
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{memberId}")
     public ResponseObject deleteMember(@PathVariable Integer memberId) {
         memberService.deleteMember(memberId);

@@ -34,6 +34,7 @@ public class SecurityConfiguration {
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 	private static final String[] SWAGGER_URLS = {"/api/v1/auth/**","/v3/**","/v3/api-docs.yaml","/swagger-ui.html","/swagger-ui/**"};
+    private static final String[] PUBLIC_URLS = {"/auth/**","/api/member/**"};
 
 	public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, MemberDetailsService memberDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
 		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
@@ -46,7 +47,7 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers(PUBLIC_URLS).permitAll()
                 .requestMatchers(SWAGGER_URLS).permitAll()
                 .anyRequest().authenticated());
         http.exceptionHandling(exceptionHandling -> exceptionHandling
