@@ -18,7 +18,7 @@ public class MemberDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
+    public UserDetails loadUserByUsername(String username) throws ResourceNotFoundException {
          Member member = memberRepo.findByEmail(username)
                 .orElseThrow(() -> new ResourceNotFoundException("Email", username));
          

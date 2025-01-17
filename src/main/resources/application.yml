@@ -3,16 +3,27 @@ spring:
   application:
     name: BOOK_RENTAL
   datasource:
-        url: jdbc:postgresql://dpg-ctul09tumphs73ep91mg-a.singapore-postgres.render.com/bookrental_60b5
-#        url: jdbc:postgresql://localhost:5432/Book-Rental
-        username: demobookrental
-#        username: postgres
-        password: sRZoaz4Y9gU9GtCeUKUmk9EDNt34NNBY
-#        password: admin
+#        url: jdbc:postgresql://dpg-ctul09tumphs73ep91mg-a.singapore-postgres.render.com/bookrental_60b5
+        url: jdbc:postgresql://localhost:5432/Book-Rental
+#        username: demobookrental
+        username: postgres
+#        password: sRZoaz4Y9gU9GtCeUKUmk9EDNt34NNBY
+        password: admin
         driverClassName: org.postgresql.Driver
   servlet:
     multipart:
       max-file-size: 10MB
+# OAUTH
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: 93270759260-4rcqigiig7r2kvoa4e424jcj4fbjhcor.apps.googleusercontent.com
+            clientSecret: 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
+            scope:
+              - email
+              - profile
   #HIBERNATE CONFIGURATION
   jpa:
         properties:

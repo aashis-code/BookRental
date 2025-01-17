@@ -1,18 +1,19 @@
 package com.bookrental.controller;
 
+import com.bookrental.serviceimpl.oauth.GoogleSignIn;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.ResponseObject;
@@ -22,15 +23,19 @@ import com.bookrental.security.LoginResponse;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.Map;
+
 @RequestMapping("/auth")
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Authentication", description = "Endpoints for managing Authentication related activities.")
-public class AuthenticationController {
+public class AuthenticationController extends BaseController {
 
     private final JwtService jwtService;
 
     private final AuthenticationManager authenticationManager;
+
+    private final GoogleSignIn googleSignIn;
 
     //    Log In user
     @Operation(
@@ -58,6 +63,12 @@ public class AuthenticationController {
             throw new ResourceNotFoundException("Enter Valid user details.", null);
         }
 
+    }
+
+    @GetMapping("/callback")
+    public ResponseEntity<?> handleGoogleCallback(@RequestParam String code) {
+        System.out.println(code);
+        return ResponseEntity.status(HttpStatus.OK).body(getSuccessResponse("Token received.", Map.of("token",this.googleSignIn.handleGoogleSignInAndReturnToken(code))));
     }
 
 }

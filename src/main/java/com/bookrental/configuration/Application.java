@@ -7,6 +7,7 @@ import org.springframework.security.access.expression.method.DefaultMethodSecuri
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 
 import com.bookrental.security.CustomPermissionEvaluator;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class Application {
@@ -21,6 +22,12 @@ public class Application {
 		DefaultMethodSecurityExpressionHandler handler = new DefaultMethodSecurityExpressionHandler();
 		handler.setPermissionEvaluator(permissionEvaluator);
 		return handler;
+	}
+
+
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
 	}
 
 }
