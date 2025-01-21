@@ -8,7 +8,9 @@
 #ENTRYPOINT ["sh","-c","java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar"]
 
 # Use OpenJDK 17 as the base image
-FROM openjdk:17
+#FROM openjdk:17
+FROM eclipse-temurin:17-jdk
+
 
 # Set the working directory inside the container
 WORKDIR /app
