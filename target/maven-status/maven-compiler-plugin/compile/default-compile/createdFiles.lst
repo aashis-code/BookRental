@@ -28,6 +28,7 @@ com\bookrental\exceptions\UnAuthorizedException.class
 com\bookrental\service\AuthorService.class
 com\bookrental\security\MemberDetails.class
 com\bookrental\repository\BookTransactionRepo.class
+com\bookrental\helper\oauth\CustomOauth2User.class
 com\bookrental\dto\BookDto.class
 com\bookrental\model\Member.class
 com\bookrental\modelmapper\BookModelMapper$1.class
@@ -79,7 +80,6 @@ com\bookrental\model\RolePermissionMapping.class
 com\bookrental\helper\email\EmailDetails$EmailDetailsBuilder.class
 com\bookrental\configuration\AuditConfiguration.class
 com\bookrental\exceptions\ResourceAlreadyExist.class
-com\bookrental\model\Member$MemberBuilder.class
 com\bookrental\repository\MemberRepo.class
 com\bookrental\modelmapper\BookModelMapper.class
 com\bookrental\serviceimpl\CategoryImpl.class
@@ -94,7 +94,6 @@ com\bookrental\dto\BookAddRequest.class
 com\bookrental\helper\email\EmailService.class
 com\bookrental\service\AuthenticationSevice.class
 com\bookrental\controller\GenericController.class
-com\bookrental\serviceimpl\oauth\GoogleSignIn.class
 com\bookrental\dto\RoleDto.class
 com\bookrental\model\BookTransaction.class
 com\bookrental\validation\Create.class
