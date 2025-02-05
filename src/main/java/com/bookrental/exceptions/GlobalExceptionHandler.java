@@ -1,9 +1,6 @@
 package com.bookrental.exceptions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -24,21 +21,22 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseObject methodArgumentValidException(MethodArgumentNotValidException ex) {
-		Map<String, List<String>> errorHashMap = new HashMap<>();
+//		Map<String, List<String>> errorHashMap = new HashMap<>();
+		String error = ex.getBindingResult().getAllErrors().stream().findFirst()
+						.map(err -> err.getDefaultMessage()).toString();
+//		ex.getBindingResult().getAllErrors().forEach(error -> {
+//			String field = ((FieldError) error).getField();
+//			defaultMessage.set(error.getDefaultMessage());
 
-		ex.getBindingResult().getAllErrors().forEach(error -> {
-			String field = ((FieldError) error).getField();
-			String defaultMessage = error.getDefaultMessage();
-
-			if (errorHashMap.containsKey(field)) {
-				errorHashMap.get(field).add(defaultMessage);
-			} else {
-				List<String> errorMessages = new ArrayList<>();
-				errorMessages.add(defaultMessage);
-				errorHashMap.put(field, errorMessages);
-			}
-		});
-		return ResponseObject.builder().status(false).message("Validation error.").data(errorHashMap).build();
+//			if (errorHashMap.containsKey(field)) {
+//				errorHashMap.get(field).add(defaultMessage);
+//			} else {
+//				List<String> errorMessages = new ArrayList<>();
+//				errorMessages.add(defaultMessage);
+//				errorHashMap.put(field, errorMessages);
+//			}
+//		});
+		return ResponseObject.builder().status(false).message("Validation error.").data(error).build();
 	}
 
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)

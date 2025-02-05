@@ -2,13 +2,11 @@ package com.bookrental.dto;
 
 import java.util.List;
 
-import com.bookrental.validation.ValidEmail;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.bookrental.validation.email.ValidEmail;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;

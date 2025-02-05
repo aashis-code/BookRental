@@ -28,12 +28,10 @@ public class AuthorImpl implements AuthorService {
 
     private AuthorRepo authorRepo;
 
-    private final Validator validator;
     private Logger logger = LoggerFactory.getLogger(AuthorImpl.class);
 
-    public AuthorImpl(AuthorRepo authorRepo, Validator validator) {
+    public AuthorImpl(AuthorRepo authorRepo) {
         this.authorRepo = authorRepo;
-        this.validator = Validation.buildDefaultValidatorFactory().getValidator();
     }
 
     @Override
@@ -78,8 +76,8 @@ public class AuthorImpl implements AuthorService {
     @Override
     @Transactional
     public void deleteAuthor(Integer authorId) {
-        if (authorId < 1) {
-            throw new ResourceNotFoundException("Invalid author Id.", null);
+        if (authorRepo.existsById(authorId)) {
+            throw new ResourceNotFoundException("AuthorId", String.valueOf(authorId));
         }
         int result = authorRepo.deleteAuthorById(authorId);
         if (result < 1) {

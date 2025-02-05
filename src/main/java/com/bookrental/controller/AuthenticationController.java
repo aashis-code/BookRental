@@ -1,5 +1,6 @@
 package com.bookrental.controller;
 
+import com.bookrental.dto.RefreshTokenDto;
 import com.bookrental.serviceimpl.oauth.GoogleSignIn;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -64,6 +65,15 @@ public class AuthenticationController extends BaseController {
         }
 
     }
+
+@PostMapping("/get-access-token")
+public ResponseObject getAccessToken(@RequestBody RefreshTokenDto refreshTokenDto){
+    String refreshToken = refreshTokenDto.getRefreshToken();
+    if(!jwtService.validateToken(refreshToken)){
+        return getFailureResponse("Invalid Refresh Token", null);
+    }
+    return getSuccessResponse(null, null);
+}
 
     @GetMapping("/callback")
     public ResponseEntity<?> handleGoogleCallback(@RequestParam String code) {

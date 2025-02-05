@@ -3,6 +3,9 @@ package com.bookrental.dto;
 import java.time.LocalDate;
 import java.util.Set;
 
+import com.bookrental.helper.constants.MessageConstants;
+import com.bookrental.validation.date.ValidDate;
+import com.bookrental.validation.isbn.ValidIsbn;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.constraints.Min;
@@ -23,7 +26,7 @@ public class BookAddRequest {
 	@Min(value = 1, message = "Book must at least contain 1 page.")
 	private Integer numberOfPages;
 
-	@Pattern(regexp = "^\\d{13}$", message = "Enter valid ISBN.")
+	@ValidIsbn(message = MessageConstants.INVALID_ISBN)
 	private String isbn;
 
 	@Min(value = 0, message = "Rating must be not less than zero.")
@@ -32,6 +35,7 @@ public class BookAddRequest {
 	@Min(value = 0, message = "No of books musn't be less than zero.")
 	private Integer stockCount;
 
+	@ValidDate(message = MessageConstants.INVALID_DATE)
 	private LocalDate publishedDate;
 
 	private MultipartFile photo;

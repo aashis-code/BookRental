@@ -2,15 +2,19 @@ package com.bookrental.controller;
 
 import com.bookrental.dto.CategoryDto;
 import com.bookrental.helper.ResponseObject;
+import com.bookrental.helper.constants.MessageConstants;
+import com.bookrental.helper.constants.ModuleNameConstants;
 import com.bookrental.helper.pagination.PaginationRequest;
 import com.bookrental.service.CategoryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/category")
 @Tag(name = "Category", description = "Endpoints for managing Category related activities.")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class CategoryController extends BaseController {
 
     private final CategoryService categoryService;
@@ -21,28 +25,29 @@ public class CategoryController extends BaseController {
 
     @PostMapping("")
     public ResponseObject createCategory(@RequestBody @Valid CategoryDto categoryDto) {
-        return getSuccessResponse("Success !!", categoryService.categorySaveAndUpdate(categoryDto));
+        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_UPDATE, ModuleNameConstants.CATEGORY_CONTROLLER), categoryService.categorySaveAndUpdate(categoryDto));
     }
 
     @GetMapping("/{categoryId}")
     public ResponseObject getCategoryById(@PathVariable Integer categoryId) {
-        return getSuccessResponse("Successfull !!", categoryService.getCategoryById(categoryId));
+        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.CATEGORY_CONTROLLER), categoryService.getCategoryById(categoryId));
     }
 
     @GetMapping("/")
     public ResponseObject getAllCategories() {
-        return getSuccessResponse("Successfully fetched all categories !!", categoryService.getAllCategory());
+        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.CATEGORY_CONTROLLER), categoryService.getAllCategory());
     }
 
     @GetMapping("/paginated")
     public ResponseObject getPaginatedCategoryList(@RequestBody PaginationRequest paginationRequest) {
-        return getSuccessResponse("Successfully fetched paginated data.", categoryService.getPaginatedCategoryList(paginationRequest));
+        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.CATEGORY_CONTROLLER), categoryService.getPaginatedCategoryList(paginationRequest));
     }
 
     @DeleteMapping("/{categoryId}")
     public ResponseObject deleteRoleId(@PathVariable Integer categoryId) {
         categoryService.deleteCategoryById(categoryId);
-        return getSuccessResponse("Successfully deleted category !!", true);
+        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_DELETE, ModuleNameConstants.CATEGORY_CONTROLLER), true);
+
     }
 
 }

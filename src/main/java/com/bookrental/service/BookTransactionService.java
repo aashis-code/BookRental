@@ -10,5 +10,6 @@ public interface BookTransactionService {
 
     PaginatedResponse getPaginatedBookTransaction(BookPaginationRequest paginationRequest);
 
+    void getBookTransactionLessThanOneDayRemain();
 
 }

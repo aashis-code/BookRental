@@ -1,6 +1,7 @@
 package com.bookrental.repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 import com.bookrental.helper.pagination.BookPaginationRequest;
@@ -35,4 +36,10 @@ public interface BookTransactionRepo extends JpaRepository<BookTransaction, Inte
 	                           Integer memberId,
 	                           String rentStatus,
 	                           Pageable pageable);
+
+	@Query(value ="select bt.id, to_char(bt.to_date,'YYYY-MM-DD') as deadline, b.name as bookname, b.photo, m.email, m.name from book_transaction bt\n" +
+			"inner join book b on b.id = bt.book_id \n" +
+			"inner join member m on m.id = bt.member_id \n" +
+			"where bt.to_date <= (current_date + interval '1 day')  and bt.rent_status = 'RENT'", nativeQuery = true)
+	List<Map<String,Object>> findAllBookTransactionForSchedular();
 }

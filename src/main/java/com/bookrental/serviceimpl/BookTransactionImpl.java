@@ -9,6 +9,7 @@ import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.RentType;
 import com.bookrental.helper.email.EmailDetails;
 import com.bookrental.helper.email.EmailService;
+import com.bookrental.helper.email.EmailServiceImpl;
 import com.bookrental.helper.pagination.BookPaginationRequest;
 import com.bookrental.model.Book;
 import com.bookrental.model.BookTransaction;
@@ -20,9 +21,11 @@ import com.bookrental.service.BookTransactionService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -84,7 +87,7 @@ public class BookTransactionImpl implements BookTransactionService {
                     .rentStatus(RentType.RENT).member(member).book(book).build();
             emailService.sendMailWithAttachment(EmailDetails.builder()
                     .subject("You have rented book.")
-                    .recipient("aashisdev057@gmail.com")
+                    .recipient("aahisdev057@gmail.com")
                     .attachment("email-template")
                     .build(), bookTransaction);
             bookTransactionRepo.save(bookTransaction);
@@ -99,5 +102,27 @@ public class BookTransactionImpl implements BookTransactionService {
         return PaginatedResponse.builder().content(response.getContent())
                 .totalElements(response.getTotalElements()).currentPageIndex(response.getNumber())
                 .numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();
+    }
+
+
+    @Scheduled(cron = "0 */2 * * * *")
+    @Override
+    public void getBookTransactionLessThanOneDayRemain(){
+        List<Map<String, Object>> bookTran = bookTransactionRepo.findAllBookTransactionForSchedular();
+
+        for (Map<String, Object> bookObj : bookTran) {
+            emailService.sendMailWithAttachment(EmailDetails.builder()
+                    .subject("Reminder for returning book.")
+                    .attachment("book-return-deadline")
+                    .msgBody("Please return your book.")
+                    .recipient(bookObj.get("email").toString())
+//                            .recipient("aashisdev057@gmail.com")
+                    .build(),
+                    BookTransaction.builder()
+                    .book(Book.builder().name(bookObj.get("bookname").toString()).photo(bookObj.get("photo").toString()).build())
+                    .member(Member.builder().email(bookObj.get("email").toString()).name(bookObj.get("name").toString()).build())
+                    .toDate(LocalDate.parse(bookObj.get("deadline").toString()))
+                    .build());
+            }
     }
 }

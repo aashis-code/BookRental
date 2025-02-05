@@ -1,6 +1,6 @@
 package com.bookrental.dto;
 
-import com.bookrental.validation.ValidEmail;
+import com.bookrental.validation.email.ValidEmail;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.validation.constraints.Pattern;

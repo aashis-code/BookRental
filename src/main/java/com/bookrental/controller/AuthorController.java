@@ -3,6 +3,7 @@ package com.bookrental.controller;
 import com.bookrental.dto.AuthorDto;
 import com.bookrental.helper.ResponseObject;
 import com.bookrental.helper.constants.MessageConstants;
+import com.bookrental.helper.constants.ModuleNameConstants;
 import com.bookrental.helper.pagination.PaginationRequest;
 import com.bookrental.service.AuthorService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(path = "/api/author")
 @SecurityRequirement(name = "bookRental")
-@Tag(name = "Author", description = "Endpoints for managing Author related activities.")
+@Tag(name = ModuleNameConstants.AUTHOR_CONTROLLER, description = "Endpoints for managing Author related activities.")
 @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
 public class AuthorController extends BaseController {
 
@@ -27,28 +28,28 @@ public class AuthorController extends BaseController {
     @PostMapping("")
     public ResponseObject createAndUpdateAuthor(@RequestBody @Valid AuthorDto authorDto) {
 
-        return getSuccessResponse(MessageConstants.CRUD_UPDATE, authorService.saveAndUpdateAuthor(authorDto));
+        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_UPDATE, ModuleNameConstants.AUTHOR_CONTROLLER), authorService.saveAndUpdateAuthor(authorDto));
     }
 
     @GetMapping("/{authorId}")
     public ResponseObject getAuthorById(@PathVariable Integer authorId) {
-        return getSuccessResponse(MessageConstants.CRUD_GET, authorService.getAuthorById(authorId));
+        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.AUTHOR_CONTROLLER), authorService.getAuthorById(authorId));
     }
 
     @GetMapping("/")
     public ResponseObject getAllAuthors() {
-        return getSuccessResponse(MessageConstants.CRUD_GET, authorService.getAllAuthors());
+        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.AUTHOR_CONTROLLER), authorService.getAllAuthors());
     }
 
-    @GetMapping("/paginated")
+    @PostMapping("/paginated")
     public ResponseObject getPaginatedAuthors(@RequestBody PaginationRequest filterRequest) {
-        return getSuccessResponse(MessageConstants.CRUD_GET, authorService.getPaginatedAuthorList(filterRequest));
+        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.AUTHOR_CONTROLLER), authorService.getPaginatedAuthorList(filterRequest));
     }
 
     @DeleteMapping("/{deleteId}")
     public ResponseObject deleteAuthor(@PathVariable Integer deleteId) {
         authorService.deleteAuthor(deleteId);
-        return getSuccessResponse(MessageConstants.CRUD_DELETE, true);
+        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_DELETE, ModuleNameConstants.AUTHOR_CONTROLLER), true);
     }
 
 }

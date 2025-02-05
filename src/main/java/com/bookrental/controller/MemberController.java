@@ -4,6 +4,8 @@ import com.bookrental.dto.AssignRoleDto;
 import com.bookrental.dto.MemberDto;
 import com.bookrental.dto.PasswordResetRequestDto;
 import com.bookrental.helper.ResponseObject;
+import com.bookrental.helper.constants.MessageConstants;
+import com.bookrental.helper.constants.ModuleNameConstants;
 import com.bookrental.helper.pagination.PaginationRequest;
 import com.bookrental.service.MemberService;
 import com.bookrental.service.PasswordResetService;
@@ -13,7 +15,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,7 +42,7 @@ public class MemberController extends BaseController {
             }
     )
     @PostMapping("")
-//    @PreAuthorize("hasPermission(#memberDto,'remove_librarian')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseObject addMember(@RequestBody @Valid MemberDto memberDto) {
 
         return new ResponseObject(true, "Success on member entity operation !!", memberService.saveAndUpdateMember(memberDto));
@@ -51,33 +52,33 @@ public class MemberController extends BaseController {
     @PreAuthorize("hasPermission(#memberId,'MEMBER','fetch_profile')")
     public ResponseObject getMemberById(@PathVariable Integer memberId) {
         MemberDto member = memberService.getMemberById(memberId);
-        return getSuccessResponse("Success !!", member);
+        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.MEMBER_CONTROLLER), member);
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     @GetMapping("")
     public ResponseObject getAllMembers() {
 
-        return getSuccessResponse("Success !!", memberService.getAllMembers());
+        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.MEMBER_CONTROLLER), memberService.getAllMembers());
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     @GetMapping("/paginated")
     public ResponseObject getPaginatedMemberList(@RequestBody PaginationRequest filterRequest) {
-        return getSuccessResponse("Successfully fetched paginated data.", memberService.getPaginatedMemberList(filterRequest));
+        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.MEMBER_CONTROLLER), memberService.getPaginatedMemberList(filterRequest));
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{memberId}")
     public ResponseObject deleteMember(@PathVariable Integer memberId) {
         memberService.deleteMember(memberId);
-        return getSuccessResponse("Successfully deleted member !!", true);
+        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_DELETE, ModuleNameConstants.MEMBER_CONTROLLER), true);
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping("/assign-roles")
     public ResponseObject assignRolesToMember(@RequestBody AssignRoleDto assignRoleDto) {
-        return getSuccessResponse("Successfully assigned roles !!", memberService.assignRoles(assignRoleDto.getMemberId(), assignRoleDto.getRoles()));
+        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.MEMBER_CONTROLLER), memberService.assignRoles(assignRoleDto.getMemberId(), assignRoleDto.getRoles()));
     }
 
     @PostMapping("/send-token")

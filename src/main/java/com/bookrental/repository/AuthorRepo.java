@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 import com.bookrental.model.Author;
 
 @Repository
-public interface AuthorRepo extends JpaRepository<Author, Integer> {
+public interface AuthorRepo extends GenericRepo<Author, Integer> {
 
 	Optional<Author> findByEmailAndDeleted(String email, boolean deleted);
 

@@ -1,4 +1,4 @@
-package com.bookrental.validation;
+package com.bookrental.validation.email;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

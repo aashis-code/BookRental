@@ -10,4 +10,10 @@ public class MessageConstants {
     public static final String SOMETHING_WRONG = "something.wrong";
     public static final String EMAIL_INVALID = "email.invalid";
     public static final String NOT_NULL = "not.null";
+
+
+
+
+    public static final String INVALID_DATE = "invalid.date";
+    public static final String INVALID_ISBN = "invalid.isbn";
 }

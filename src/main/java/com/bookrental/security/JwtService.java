@@ -45,6 +45,15 @@ public class JwtService {
 		return buildToken(Map.of("roles",roles), username, getExpirationTime());
 	}
 
+	public String generateAccessToken(String username, long expiration) {
+		return Jwts.builder()
+				.setSubject(username)
+				.setIssuedAt(new Date())
+				.setExpiration(new Date(System.currentTimeMillis() + expiration))
+				.signWith(SignatureAlgorithm.HS256, secretKey)
+				.compact();
+	}
+
 	public long getExpirationTime() {
 		return jwtExpiration;
 	}
@@ -59,6 +68,15 @@ public class JwtService {
 	public boolean isTokenValid(String token, UserDetails userDetails) {
 		final String username = extractUsername(token);
 		return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+	}
+
+	public boolean validateToken(String token) {
+		try {
+			Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+			return true;
+		} catch (JwtException e) {
+			return false;
+		}
 	}
 
 	private boolean isTokenExpired(String token) {

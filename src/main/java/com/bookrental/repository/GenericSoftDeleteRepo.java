@@ -32,5 +32,8 @@ public interface GenericSoftDeleteRepo<T, ID> extends JpaSpecificationExecutor<T
     @Query("update #{#entityName} e set e.deleted=false where e.id in ?1")
     void undoSoftDeleteOfSelectedIds(Collection<ID> ids);
 
+    @Query("select count(e)>0 from #{#entityName} e where e.id = ?1 and e.deleted =false")
+    boolean existsById(ID id);
+
 
 }
