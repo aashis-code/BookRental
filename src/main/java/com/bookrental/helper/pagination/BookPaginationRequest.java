@@ -23,6 +23,6 @@ public class BookPaginationRequest extends PaginationRequest{
     private RentType rentStatus=RentType.RENT;
 
     @Enumerated(EnumType.STRING)
-    private OrderBy orderBy;
+    private OrderBy orderBy = OrderBy.NAME;
 
 }
