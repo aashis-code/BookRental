@@ -34,7 +34,7 @@ public class SecurityConfiguration {
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 	private static final String[] SWAGGER_URLS = {"/api/v1/auth/**","/v3/**","/v3/api-docs.yaml","/swagger-ui.html","/swagger-ui/**"};
-    private static final String[] PUBLIC_URLS = {"/auth/**","/api/member/**"};
+    private static final String[] PUBLIC_URLS = {"/auth/**","/api/member/**","/api/book/**"};
 
 	public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, MemberDetailsService memberDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
 		this.jwtAuthenticationFilter = jwtAuthenticationFilter;

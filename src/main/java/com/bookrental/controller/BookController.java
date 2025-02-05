@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(path = "/api/book")
 @Tag(name = "Book", description = "Endpoints for managing Book related activities.")
-@PreAuthorize("hasAnyAuthority('ROLE_LIBRARIAN','ROLE_ADMIN')")
 public class BookController extends BaseController {
 
     private final BookService bookService;
@@ -27,6 +26,7 @@ public class BookController extends BaseController {
 
 
     @PostMapping("")
+    @PreAuthorize("hasAnyAuthority('ROLE_LIBRARIAN','ROLE_ADMIN')")
     public ResponseObject uploadBooksFromJson(@ModelAttribute @Valid ListOfBookRequest bookAddRequests) {
 
         return getSuccessResponse("Books successfully added !", bookService.bookSaveAndUpdate(bookAddRequests));
@@ -49,6 +49,7 @@ public class BookController extends BaseController {
     }
 
     @DeleteMapping("")
+    @PreAuthorize("hasAnyAuthority('ROLE_LIBRARIAN','ROLE_ADMIN')")
     public ResponseObject deleteBookById(@RequestBody BookPaginationRequest requestPojo) {
         bookService.deleteBook(requestPojo.getBookId());
         return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_DELETE, ModuleNameConstants.BOOK_CONTROLLER), true);
