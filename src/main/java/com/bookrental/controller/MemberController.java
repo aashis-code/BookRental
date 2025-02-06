@@ -63,7 +63,7 @@ public class MemberController extends BaseController {
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    @GetMapping("/paginated")
+    @PostMapping("/paginated")
     public ResponseObject getPaginatedMemberList(@RequestBody PaginationRequest filterRequest) {
         return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.MEMBER_CONTROLLER), memberService.getPaginatedMemberList(filterRequest));
     }

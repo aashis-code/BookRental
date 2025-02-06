@@ -38,7 +38,7 @@ public class CategoryController extends BaseController {
         return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.CATEGORY_CONTROLLER), categoryService.getAllCategory());
     }
 
-    @GetMapping("/paginated")
+    @PostMapping("/paginated")
     public ResponseObject getPaginatedCategoryList(@RequestBody PaginationRequest paginationRequest) {
         return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.CATEGORY_CONTROLLER), categoryService.getPaginatedCategoryList(paginationRequest));
     }

@@ -26,7 +26,7 @@ public class BookTransactionController extends BaseController {
         return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_UPDATE, ModuleNameConstants.BOOK_TRANSACTION_CONTROLLER), bookTransactionService.bookRentCreateAndUpdate(bookTransactionDto));
     }
 
-    @GetMapping("/paginated")
+    @PostMapping("/paginated")
     public ResponseObject getPaginatedBookTransaction(@RequestBody BookPaginationRequest paginationRequest) {
         return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.BOOK_TRANSACTION_CONTROLLER), bookTransactionService.getPaginatedBookTransaction(paginationRequest));
     }

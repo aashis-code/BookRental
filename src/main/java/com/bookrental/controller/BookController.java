@@ -37,7 +37,7 @@ public class BookController extends BaseController {
         return getSuccessResponse("Successfully fetched all books !!", bookService.getAllBooks());
     }
 
-    @GetMapping("/paginated")
+    @PostMapping("/paginated")
     public ResponseObject getPaginatedBookList(@RequestBody BookPaginationRequest paginationRequest) {
         return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.BOOK_CONTROLLER),
                 bookService.getPaginatedBookList(paginationRequest));
@@ -71,7 +71,7 @@ public class BookController extends BaseController {
     }
 
     @Operation(summary = "Fetch Image By BookId.")
-    @GetMapping("/image")
+    @PostMapping("/image")
     public  ResponseObject getAllBookImages(@RequestBody BookPaginationRequest requestPojo, HttpServletResponse response) {
         bookService.getImageByBookId(response, requestPojo.getBookId());
         return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.BOOK_CONTROLLER),null);
