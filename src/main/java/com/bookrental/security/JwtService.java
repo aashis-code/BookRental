@@ -27,8 +27,12 @@ public class JwtService {
 //	@Value("${security.jwt.secret-key}")
 	private final String secretKey = "3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b";
 
-	@Value("${security.jwt.expiration-time}")
-	private long jwtExpiration;
+	@Value(value = "${security.jwt.refresh-token-expiration-time}")
+	private long jwtRefereshTokenExpiration;
+
+//	@Value(value = "${security.jwt.access-token-expiration-time}")
+//	private long jwtAccessTokenExpiration;
+
 
 	public String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);
@@ -39,23 +43,20 @@ public class JwtService {
 		return claimsResolver.apply(claims);
 	}
 
-	public String generateToken(UserDetails userDetails) {
+	public String generateToken(UserDetails userDetails, long expirationTime) {
 		List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 		String username = userDetails.getUsername();
-		return buildToken(Map.of("roles",roles), username, getExpirationTime());
+		return buildToken(Map.of("roles",roles), username, expirationTime);
 	}
 
-	public String generateAccessToken(String username, long expiration) {
-		return Jwts.builder()
-				.setSubject(username)
-				.setIssuedAt(new Date())
-				.setExpiration(new Date(System.currentTimeMillis() + expiration))
-				.signWith(SignatureAlgorithm.HS256, secretKey)
-				.compact();
-	}
+//	public String generateAccessToken(UserDetails userDetails) {
+//		List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+//		String username = userDetails.getUsername();
+//		return buildToken(Map.of("roles",roles), username, jwtAccessTokenExpiration);
+//	}
 
 	public long getExpirationTime() {
-		return jwtExpiration;
+		return jwtRefereshTokenExpiration;
 	}
 
 	private String buildToken(Map<String, Object> extraClaims,String username, long expiration) {
@@ -79,7 +80,7 @@ public class JwtService {
 		}
 	}
 
-	private boolean isTokenExpired(String token) {
+	public boolean isTokenExpired(String token) {
 		return extractExpiration(token).before(new Date());
 	}
 
