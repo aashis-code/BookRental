@@ -29,6 +29,10 @@ public class GoogleSignIn {
     @Value(value = "${spring.security.oauth2.client.registration.google.clientSecret}")
     private String CLIENT_SECRET;
 
+    @Value(value = "${security.jwt.refresh-token-expiration-time}")
+    private long jwtRefereshTokenExpiration;
+
+
     private final RestTemplate restTemplate;
 
     private final MemberDetailsService memberDetailsService;
@@ -77,7 +81,7 @@ public class GoogleSignIn {
                     member.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
                     this.memberRepo.save(member);
                 }
-                return this.jwtService.generateToken(userDetails);
+                return this.jwtService.generateToken(userDetails, jwtRefereshTokenExpiration);
             }
 
         } catch (Exception e) {

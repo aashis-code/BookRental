@@ -32,7 +32,7 @@ public class BookAddRequest {
 	@Min(value = 0, message = "Rating must be not less than zero.")
 	private Double rating;
 
-	@Min(value = 0, message = "No of books musn't be less than zero.")
+	@Min(value = 1, message = "No of books must not be less than zero.")
 	private Integer stockCount;
 
 	@ValidDate(message = MessageConstants.INVALID_DATE)
