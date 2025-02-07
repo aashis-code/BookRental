@@ -43,7 +43,7 @@ public class BookController extends BaseController {
                 bookService.getPaginatedBookList(paginationRequest));
     }
 
-    @GetMapping("/by-bookId")
+    @PostMapping("/by-bookId")
     public ResponseObject getBookById(@RequestBody BookPaginationRequest requestPojo) {
         return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.BOOK_CONTROLLER), bookService.getBookById(requestPojo.getBookId()));
     }
