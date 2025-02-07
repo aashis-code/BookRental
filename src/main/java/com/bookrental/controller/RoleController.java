@@ -42,10 +42,10 @@ public class RoleController extends BaseController {
 		return getSuccessResponse("Successfully fetched paginated data.", roleService.getPaginatedRoleList(paginationRequest.getPage(), paginationRequest.getSize()));
 	}
 
-    @DeleteMapping("/{memberId}")
+    @DeleteMapping("/{roleId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseObject deleteMember(@PathVariable Integer memberId) {
-    	roleService.roleDelete(memberId);
+    public ResponseObject deleteRole(@PathVariable Integer roleId) {
+    	roleService.roleDelete(roleId);
         return getSuccessResponse("Successfully deleted member !!", true);
     }
 
