@@ -1,6 +1,7 @@
 package com.bookrental.dto;
 
 import com.bookrental.validation.email.ValidEmail;
+import com.bookrental.validation.mobile.ValidPhoneNumber;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.validation.constraints.Pattern;
@@ -21,7 +22,7 @@ public class AuthorDto {
     @ValidEmail
     private String email;
 
-    @Pattern(regexp = "^[0-9]{10}$", message = "Enter valid number.")
+    @ValidPhoneNumber
     private String mobileNumber;
 
     @JsonIgnore

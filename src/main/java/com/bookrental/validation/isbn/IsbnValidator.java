@@ -10,9 +10,9 @@ public class IsbnValidator implements ConstraintValidator<ValidIsbn, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null || value.isEmpty()) {
-            return false;
+        if (value != null) {
+            return value.matches(ISBN_REGEX);
         }
-        return value.matches(ISBN_REGEX);
+        return true;
     }
 }

@@ -3,6 +3,7 @@ package com.bookrental.dto;
 import java.util.List;
 
 import com.bookrental.validation.email.ValidEmail;
+import com.bookrental.validation.mobile.ValidPhoneNumber;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -28,7 +29,7 @@ public class MemberDto {
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password;
 
-	@Size(min = 10, max = 10, message = "Phone number must consist 10 digits.")
+	@ValidPhoneNumber
 	private String mobileNumber;
 
 	private String address;
