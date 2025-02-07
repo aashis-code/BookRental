@@ -19,7 +19,7 @@ public interface RoleRepo extends JpaRepository<Role, Integer> {
 	List<Role> findAllByDeleted(Pageable page, Boolean deleted);
 	
 	@Modifying
-	@Query(name = "update from role set deleted = true where id =?1")
+	@Query(value = "update role set deleted = true where id =?1", nativeQuery = true)
 	int deleteRoleById(Integer roleId);
 
 }

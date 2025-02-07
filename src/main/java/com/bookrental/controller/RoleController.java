@@ -7,6 +7,7 @@ import com.bookrental.service.RoleService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,28 +19,31 @@ public class RoleController extends BaseController {
 
     private final RoleService roleService;
 
-    @PostMapping("/")
+    @PostMapping("")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseObject roleCUD(@RequestBody @Valid RoleDto roleDto) {
         boolean result = roleService.roleSaveAndUpdate(roleDto);
         return getSuccessResponse("Successfully updated role !!", result);
     }
 
     @GetMapping("/{roleId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseObject getRoleById(@PathVariable Integer roleId) {
         return getSuccessResponse("Success !!", roleService.getRoleById(roleId));
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseObject getAllRoles() {
         return getSuccessResponse("Success !!", roleService.getAllRoles());
     }
     
-	@GetMapping("/paginated")
+	@PostMapping("/paginated")
 	public ResponseObject getPaginatedRoles(@RequestBody PaginationRequest paginationRequest) {
 		return getSuccessResponse("Successfully fetched paginated data.", roleService.getPaginatedRoleList(paginationRequest.getPage(), paginationRequest.getSize()));
 	}
 
     @DeleteMapping("/{memberId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseObject deleteMember(@PathVariable Integer memberId) {
     	roleService.roleDelete(memberId);
         return getSuccessResponse("Successfully deleted member !!", true);

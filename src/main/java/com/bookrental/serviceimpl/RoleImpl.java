@@ -1,6 +1,7 @@
 package com.bookrental.serviceimpl;
 
 import com.bookrental.dto.RoleDto;
+import com.bookrental.exceptions.AppException;
 import com.bookrental.exceptions.ResourceAlreadyExist;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.CoustomBeanUtils;
@@ -65,8 +66,8 @@ public class RoleImpl implements RoleService {
     @Override
     @Transactional
     public void roleDelete(int roleId) {
-        if (roleId < 1) {
-            throw new ResourceNotFoundException("Please, provide valid role ID.", null);
+        if (!roleRepo.existsById(roleId)) {
+            throw new AppException("Please, provide valid role ID.");
         }
          int result = this.roleRepo.deleteRoleById(roleId);
          if(result<1) {
