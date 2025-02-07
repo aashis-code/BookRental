@@ -42,7 +42,6 @@ public class MemberController extends BaseController {
             }
     )
     @PostMapping("")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseObject addMember(@RequestBody @Valid MemberDto memberDto) {
 
         return new ResponseObject(true, "Success on member entity operation !!", memberService.saveAndUpdateMember(memberDto));
