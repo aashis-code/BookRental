@@ -87,7 +87,7 @@ public class BookTransactionImpl implements BookTransactionService {
                     .rentStatus(RentType.RENT).member(member).book(book).build();
             emailService.sendMailWithAttachment(EmailDetails.builder()
                     .subject("You have rented book.")
-                    .recipient("aahisdev057@gmail.com")
+                    .recipient(member.getEmail())
                     .attachment("email-template")
                     .build(), bookTransaction);
             bookTransactionRepo.save(bookTransaction);
@@ -105,7 +105,7 @@ public class BookTransactionImpl implements BookTransactionService {
     }
 
 
-    @Scheduled(cron = "0 */2 * * * *")
+    @Scheduled(cron = "0 0 12 * * *")
     @Override
     public void getBookTransactionLessThanOneDayRemain(){
         List<Map<String, Object>> bookTran = bookTransactionRepo.findAllBookTransactionForSchedular();
