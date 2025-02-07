@@ -51,7 +51,7 @@ public class BookImpl implements BookService {
         Map<Integer, Category> categoryMap = new HashMap<>();
 
         for (BookAddRequest bookAddRequest : bookAddRequests.getBookAddRequest()) {
-            compareDate(bookAddRequest.getPublishedDate());
+//            compareDate(bookAddRequest.getPublishedDate());
             Set<Integer> authorIds = bookAddRequest.getAuthorId();
             for (Integer authorId : authorIds) {
                 if (!authorMap.containsKey(authorId)) {
@@ -172,11 +172,11 @@ public class BookImpl implements BookService {
         return book;
     }
 
-    void compareDate(LocalDate date) {
-        if (date != null && !date.isBefore(LocalDate.now())) {
-            throw new ResourceAlreadyExist("Provided date is not valid.", null);
-        }
-    }
+//    void compareDate(LocalDate date) {
+//        if (date != null && !date.isBefore(LocalDate.now())) {
+//            throw new ResourceAlreadyExist("Provided date is not valid.", null);
+//        }
+//    }
 
     @Override
     public List<BookDto> getBooksByCategory(Integer categoryId) {
