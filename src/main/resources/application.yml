@@ -59,4 +59,4 @@ springdoc:
 # Map custom folder as static resources
 web:
   resources:
-   static-locations: file:/images/
+   static-locations: file:/opt/images/
