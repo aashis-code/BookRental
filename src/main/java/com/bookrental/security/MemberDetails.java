@@ -19,11 +19,13 @@ public class MemberDetails implements UserDetails {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private Integer id;
 	private String username;
 	private String password;
 	private List<GrantedAuthority> authorities;
 
 	public MemberDetails(Member member) {
+		this.id=id;
 		this.username = member.getEmail();
 		this.password = member.getPassword();
 		this.authorities = (member.getRoles() != null)?member.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_"+role.getName()))
@@ -44,5 +46,7 @@ public class MemberDetails implements UserDetails {
 	public String getUsername() {
 		return username;
 	}
+
+	public Integer getId() {return id;}
 
 }

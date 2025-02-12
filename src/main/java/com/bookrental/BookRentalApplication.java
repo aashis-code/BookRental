@@ -14,6 +14,8 @@ public class BookRentalApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BookRentalApplication.class, args);
+//		System.out.println(System.getProperty("user.dir"));
+//		System.out.println(System.getProperty("user.home"));
 	}
 
 }
