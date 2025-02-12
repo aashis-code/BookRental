@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface BookService {
@@ -21,7 +22,7 @@ public interface BookService {
 
 	PaginatedResponse getPaginatedBookList(BookPaginationRequest paginationRequest);
 
-	Book getBookById(Integer bookId);
+	Map<String, Object> getBookById(Integer bookId);
 
 	void deleteBook(Integer bookId);
 

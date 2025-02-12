@@ -109,18 +109,37 @@ public class BookImpl implements BookService {
     @Override
     public PaginatedResponse getPaginatedBookList(BookPaginationRequest paginationRequest) {
         Page<Map<String, Object>> response = bookRepo.filterBookAndPagination(paginationRequest.getSearchField(), paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getOrderBy().toString(), paginationRequest.getPageable());
-        return PaginatedResponse.builder().content(response.getContent())
+
+        Page<Map<String, Object>> bookList = response.map(book -> {
+            Map<String, Object> record = new HashMap<>(book);
+            try {
+                record.put("imageBase64",getImageBase64((Integer)book.get("id")));
+            } catch (IOException e) {
+                record.put("imageBase64",null);
+            }
+            return record;
+        });
+
+        return PaginatedResponse.builder().content(bookList.getContent())
                 .totalElements(response.getTotalElements()).currentPageIndex(response.getNumber())
                 .numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();
     }
 
     @Override
-    public Book getBookById(Integer bookId) {
+    public Map<String, Object> getBookById(Integer bookId) {
         if (bookId < 1) {
             throw new AppException("Enter valid book Id.");
         }
-        return bookRepo.findByIdAndDeleted(bookId, Boolean.FALSE)
+        Map<String, Object> mapBook = new HashMap<>();
+        Book book = bookRepo.findByIdAndDeleted(bookId, Boolean.FALSE)
                 .orElseThrow(() -> new ResourceNotFoundException("BookId", String.valueOf(bookId)));
+        mapBook.put("book", book);
+        try {
+            mapBook.put("imageBase64",getImageBase64(bookId));
+        } catch (IOException e) {
+            mapBook.put("imageBase64",null);
+        }
+        return mapBook;
     }
 
     @Override
@@ -240,6 +259,29 @@ public class BookImpl implements BookService {
         }  catch (IOException e) {
             throw new AppException("Failure in fetching image.");
         }
+    }
+
+    public String getImageBase64(Integer bookId) throws IOException {
+        Book book = bookRepo.findById(bookId).orElseThrow(() -> new ResourceNotFoundException("BookId", String.valueOf(bookId)));
+        if(book.getPhoto()==null){
+            throw new AppException(String.format("Book does not have a photo of bookId %s", bookId));
+        }
+        String path = book.getPhoto();
+        InputStream stream = new FileInputStream(path);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        // Read image content into ByteArrayOutputStream
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = stream.read(buffer)) != -1) {
+            baos.write(buffer, 0, length);
+        }
+        byte[] imageBytes = baos.toByteArray();
+
+        // Encode byte array to Base64
+        String base64EncodedImage = Base64.getEncoder().encodeToString(imageBytes);
+
+        return base64EncodedImage;
     }
 
 }

@@ -30,6 +30,9 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
 	@Query(value = "update book set stock_count = stock_count + ?2 where isbn= ?1 and stock_count >= 0", nativeQuery = true)
 	int incrementBookStockByIsbn(String isbn, Integer addStock);
 
+	@Query(value = "select photo as path from book where id = ?1", nativeQuery = true)
+	Optional<String> getBookImagePath(Integer id);
+
 	@Modifying
 	@Query(value = "update book set deleted=true where id= ?1", nativeQuery = true)
 	int deleteBookById(Integer bookId);
