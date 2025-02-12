@@ -241,7 +241,8 @@ public class BookImpl implements BookService {
             e.printStackTrace();
         }
 
-        return uploadImagePath;
+//        return uploadImagePath;
+        return "/resources/" + originalFilename;
     }
 
     @Override
