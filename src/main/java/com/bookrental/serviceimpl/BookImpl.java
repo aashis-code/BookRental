@@ -216,12 +216,22 @@ public class BookImpl implements BookService {
         }
 
         String originalFilename = file.getOriginalFilename();
-        File f = new File("images");
-        if (!f.exists()) {
-            f.mkdir();
+//        File f = new File("images");
+//        if (!f.exists()) {
+//            f.mkdir();
+//        }
+//
+//        String uploadImagePath = "images" + File.separator + originalFilename;
+
+        String userHome = System.getProperty("user.home");
+
+        File imageDir = new File(userHome, "images");
+        if (!imageDir.exists()) {
+            imageDir.mkdirs();
         }
 
-        String uploadImagePath = "images" + File.separator + originalFilename;
+        String uploadImagePath = userHome + File.separator + "images" + File.separator + originalFilename;
+
 
         Path path = Paths.get(uploadImagePath);
 
