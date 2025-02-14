@@ -30,8 +30,8 @@ public class JwtService {
 	@Value(value = "${security.jwt.refresh-token-expiration-time}")
 	private long jwtRefereshTokenExpiration;
 
-//	@Value(value = "${security.jwt.access-token-expiration-time}")
-//	private long jwtAccessTokenExpiration;
+	@Value(value = "${security.jwt.access-token-expiration-time}")
+	private long jwtAccessTokenExpiration;
 
 
 	public String extractUsername(String token) {
@@ -43,17 +43,21 @@ public class JwtService {
 		return claimsResolver.apply(claims);
 	}
 
-	public String generateToken(UserDetails userDetails, long expirationTime) {
-		List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-		String username = userDetails.getUsername();
-		return buildToken(Map.of("roles",roles), username, expirationTime);
-	}
-
-//	public String generateAccessToken(UserDetails userDetails) {
-//		List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+//	public String generateToken(UserDetails userDetails, long expirationTime) {
+//		List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 //		String username = userDetails.getUsername();
-//		return buildToken(Map.of("roles",roles), username, jwtAccessTokenExpiration);
+//		return buildToken(Map.of("roles",roles), username, expirationTime);
 //	}
+
+	public String generateToken(MemberDetails memberDetails, long expirationTime) {
+		List<String> roles = memberDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+		String username = memberDetails.getUsername();
+        Integer userId = memberDetails.getUserId();
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("roles", roles);
+        claims.put("userId", userId);
+		return buildToken(claims, username, expirationTime);
+	}
 
 	public long getExpirationTime() {
 		return jwtRefereshTokenExpiration;

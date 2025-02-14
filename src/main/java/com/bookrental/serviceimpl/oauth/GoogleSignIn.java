@@ -3,6 +3,7 @@ package com.bookrental.serviceimpl.oauth;
 import com.bookrental.model.Member;
 import com.bookrental.repository.MemberRepo;
 import com.bookrental.security.JwtService;
+import com.bookrental.security.MemberDetails;
 import com.bookrental.security.MemberDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -70,10 +71,10 @@ public class GoogleSignIn {
             if (userInfoResponse.getStatusCode() == HttpStatus.OK) {
                 Map<String, Object> userInfo = userInfoResponse.getBody();
                 String email = (String) userInfo.get("email");
-                UserDetails userDetails = null;
+                MemberDetails memberDetails = null;
 
                 try {
-                    userDetails = this.memberDetailsService.loadUserByUsername(email);
+                    memberDetails = (MemberDetails) memberDetailsService.loadUserByUsername(email);
                 } catch (Exception e) {
                     Member member = new Member();
                     member.setEmail(email);
@@ -81,7 +82,7 @@ public class GoogleSignIn {
                     member.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
                     this.memberRepo.save(member);
                 }
-                return this.jwtService.generateToken(userDetails, jwtRefereshTokenExpiration);
+                return this.jwtService.generateToken(memberDetails, jwtRefereshTokenExpiration);
             }
 
         } catch (Exception e) {

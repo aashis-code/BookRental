@@ -1,7 +1,7 @@
 package com.bookrental.controller;
 
 import com.bookrental.dto.RefreshTokenDto;
-import com.bookrental.security.MemberDetailsService;
+import com.bookrental.security.*;
 import com.bookrental.serviceimpl.oauth.GoogleSignIn;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.ResponseObject;
-import com.bookrental.security.JwtService;
-import com.bookrental.security.LoginMemberDto;
-import com.bookrental.security.LoginResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -66,7 +63,7 @@ public class AuthenticationController extends BaseController {
                 new UsernamePasswordAuthenticationToken(loginMemberDto.getEmail(), loginMemberDto.getPassword()));
 
         if (authenticate.isAuthenticated()) {
-            UserDetails principal = (UserDetails) authenticate.getPrincipal();
+            MemberDetails principal = (MemberDetails) authenticate.getPrincipal();
             return new ResponseObject(true, "", LoginResponse.builder()
                     .refreshToken(jwtService.generateToken(principal, jwtRefereshTokenExpiration))
                     .accessToken(jwtService.generateToken(principal, jwtAccessTokenExpiration))
@@ -81,11 +78,11 @@ public class AuthenticationController extends BaseController {
 public ResponseObject getAccessToken(@RequestBody RefreshTokenDto refreshTokenDto){
     String refreshToken = refreshTokenDto.getRefreshToken();
     String username = jwtService.extractUsername(refreshToken);
-    UserDetails userDetails = memberDetailsService.loadUserByUsername(username);
+    MemberDetails memberDetails = (MemberDetails) memberDetailsService.loadUserByUsername(username);
     if(!jwtService.validateToken(refreshToken) && jwtService.isTokenExpired(refreshToken)){
         return getFailureResponse("Invalid Refresh Token.", null);
     }
-    String accessToken = jwtService.generateToken(userDetails, jwtAccessTokenExpiration);
+    String accessToken = jwtService.generateToken(memberDetails, jwtAccessTokenExpiration);
     return new ResponseObject(true, "", LoginResponse.builder().accessToken(accessToken).build());
 }
 

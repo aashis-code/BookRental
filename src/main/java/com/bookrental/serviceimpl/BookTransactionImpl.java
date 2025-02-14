@@ -7,6 +7,7 @@ import com.bookrental.dto.PaginatedResponse;
 import com.bookrental.exceptions.AppException;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.RentType;
+import com.bookrental.helper.UserDataConfig;
 import com.bookrental.helper.email.EmailDetails;
 import com.bookrental.helper.email.EmailService;
 import com.bookrental.helper.email.EmailServiceImpl;
@@ -40,6 +41,8 @@ public class BookTransactionImpl implements BookTransactionService {
     private final BookTransactionRepo bookTransactionRepo;
 
     private final EmailService<BookTransaction> emailService;
+
+    private final UserDataConfig userDataConfig;
 
     // Renting book Operation
     @Override
@@ -98,7 +101,16 @@ public class BookTransactionImpl implements BookTransactionService {
 
     @Override
     public PaginatedResponse getPaginatedBookTransaction(BookPaginationRequest paginationRequest) {
-        Page<Map<String, Object>> response = bookTransactionRepo.filterBookTransactionAndPagination(paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getBookId(), paginationRequest.getMemberId(), paginationRequest.getRentStatus().toString(), paginationRequest.getPageable());
+        Integer memberId;
+        if(userDataConfig.getMemberId() == null) {
+            throw new AppException("You have not logged in.");
+        }
+        if(userDataConfig.isAdmin()) {
+            memberId = paginationRequest.getMemberId() != null?paginationRequest.getMemberId():null;
+        } else{
+            memberId = userDataConfig.getMemberId();
+        }
+        Page<Map<String, Object>> response = bookTransactionRepo.filterBookTransactionAndPagination(paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getBookId(), memberId, paginationRequest.getRentStatus()!=null?paginationRequest.getRentStatus().toString():null, paginationRequest.getPageable());
         return PaginatedResponse.builder().content(response.getContent())
                 .totalElements(response.getTotalElements()).currentPageIndex(response.getNumber())
                 .numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();

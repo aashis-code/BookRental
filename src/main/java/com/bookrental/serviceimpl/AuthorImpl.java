@@ -5,6 +5,7 @@ import com.bookrental.dto.PaginatedResponse;
 import com.bookrental.exceptions.AppException;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.CoustomBeanUtils;
+import com.bookrental.helper.UserDataConfig;
 import com.bookrental.helper.pagination.PaginationRequest;
 import com.bookrental.model.Author;
 import com.bookrental.repository.AuthorRepo;
@@ -28,10 +29,13 @@ public class AuthorImpl implements AuthorService {
 
     private AuthorRepo authorRepo;
 
+    private UserDataConfig userDataConfig;
+
     private Logger logger = LoggerFactory.getLogger(AuthorImpl.class);
 
-    public AuthorImpl(AuthorRepo authorRepo) {
+    public AuthorImpl(AuthorRepo authorRepo, UserDataConfig userDataConfig) {
         this.authorRepo = authorRepo;
+        this.userDataConfig = userDataConfig;
     }
 
     @Override

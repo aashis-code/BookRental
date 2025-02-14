@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(path = "/api/book-transaction")
 @Tag(name = "BookTransaction", description = "Endpoints for managing Book renting and return related activities.")
-@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
 public class BookTransactionController extends BaseController {
 
     private final BookTransactionService bookTransactionService;
 
     @PostMapping("")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public ResponseObject rentBookByMember(@RequestBody @Valid BookTransactionDto bookTransactionDto) {
         return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_UPDATE, ModuleNameConstants.BOOK_TRANSACTION_CONTROLLER), bookTransactionService.bookRentCreateAndUpdate(bookTransactionDto));
     }

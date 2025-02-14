@@ -20,7 +20,7 @@ public class BookPaginationRequest extends PaginationRequest{
     Integer memberId;
 
     @Enumerated(EnumType.STRING)
-    private RentType rentStatus=RentType.RENT;
+    private RentType rentStatus;
 
     @Enumerated(EnumType.STRING)
     private OrderBy orderBy = OrderBy.NAME;

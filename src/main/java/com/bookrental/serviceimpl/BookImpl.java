@@ -7,6 +7,7 @@ import com.bookrental.exceptions.ResourceAlreadyExist;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.CoustomBeanUtils;
 import com.bookrental.helper.ExcelHelper;
+import com.bookrental.helper.UserDataConfig;
 import com.bookrental.helper.pagination.BookPaginationRequest;
 import com.bookrental.model.Author;
 import com.bookrental.model.Book;
@@ -42,6 +43,8 @@ public class BookImpl implements BookService {
     private final CategoryRepo categoryRepo;
 
     private final BookRepo bookRepo;
+
+    private final UserDataConfig userDataConfig;
 
     @Override
     public boolean bookSaveAndUpdate(ListOfBookRequest bookAddRequests) {
