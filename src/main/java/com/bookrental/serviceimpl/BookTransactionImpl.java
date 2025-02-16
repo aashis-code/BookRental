@@ -105,7 +105,7 @@ public class BookTransactionImpl implements BookTransactionService {
         if(userDataConfig.getMemberId() == null) {
             throw new AppException("You have not logged in.");
         }
-        if(userDataConfig.isAdmin()) {
+        if(userDataConfig.isAdminOrLibrarian()) {
             memberId = paginationRequest.getMemberId() != null?paginationRequest.getMemberId():null;
         } else{
             memberId = userDataConfig.getMemberId();

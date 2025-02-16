@@ -18,10 +18,10 @@ public Integer getMemberId() {
     return null;
 }
 
-public boolean isAdmin() {
+public boolean isAdminOrLibrarian() {
    return SecurityContextHolder.getContext().getAuthentication().getAuthorities()
            .stream().map(GrantedAuthority::getAuthority)
-           .anyMatch(role -> role.equals("ROLE_ADMIN"));
+           .anyMatch(role -> role.equals("ROLE_ADMIN")  || role.equals("ROLE_LIBRARIAN"));
 }
 
 }
