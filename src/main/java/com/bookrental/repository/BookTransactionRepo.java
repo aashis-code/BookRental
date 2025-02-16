@@ -20,7 +20,7 @@ public interface BookTransactionRepo extends JpaRepository<BookTransaction, Inte
 
 	BookTransaction findByMemberAndRentStatus(Member member, RentType rentType);
 
-	@Query(value = "select bt.id,bt.rent_status,bt.created_by ,bt.from_date , bt.to_date ,(bt.to_date::DATE-CURRENT_DATE::DATE) as days_left,\r\n"
+	@Query(value = "select bt.id,bt.rent_status,bt.created_by ,bt.from_date,m.id as member_id ,b.id as book_id , bt.to_date ,(bt.to_date::DATE-CURRENT_DATE::DATE) as days_left,\r\n"
 			+ "to_char(bt.created_date, 'YYYY-MM-DD HH24:MI:SS') as created_date, bt.last_modified_by, \r\n"
 			+ "to_char(bt.modified_date, 'YYYY-MM-DD HH24:MI:SS') as last_modified_date, m.name as member_name, \r\n"
 			+ "b.name as book_name from book_transaction bt inner join member m on bt.member_id=m.id inner join book b on bt.book_id=b.id \n"
