@@ -10,9 +10,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.bookrental.exceptions.AppException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -93,19 +95,19 @@ public class JwtService {
 	}
 
 	private Claims extractAllClaims(String token) {
-		try{
+//		try {
 			return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
-		}catch(ExpiredJwtException e){
-			throw new AppException("Expired JWT token :"+ e.getMessage());
-		} catch(UnsupportedJwtException e){
-			throw new AppException("Jwt token not supported :" + e.getMessage());
-		} catch(MalformedJwtException e){
-			throw new AppException("Invalid JWT token :"+ e.getMessage());
-		} catch(SignatureException e){
-			throw new AppException("JWT signature validation failed :"+ e.getMessage());
-		} catch(IllegalArgumentException e){
-			throw new AppException("JWT token is null or empty :"+ e.getMessage());
-		}
+//		}catch(ExpiredJwtException e){
+//			throw new AppException("Expired JWT token :"+ e.getMessage());
+//		} catch(UnsupportedJwtException e){
+//			throw new AppException("Jwt token not supported :" + e.getMessage());
+//		} catch(MalformedJwtException e){
+//			throw new AppException("Invalid JWT token :"+ e.getMessage());
+//		} catch(SignatureException e){
+//			throw new AppException("JWT signature validation failed :"+ e.getMessage());
+//		} catch(IllegalArgumentException e){
+//			throw new AppException("JWT token is null or empty :"+ e.getMessage());
+//		}
 	}
 
 	private Key getSignInKey() {
