@@ -31,7 +31,7 @@
         <p>Dear <span th:text="${object.getMember().getName()}"></span>,</p>
         <p>Thank you for renting the book <strong th:text="${object.getBook().getName()}"></strong>.</p>
 
-        <img th:src="@{${imageName}}" alt="Book Image">
+        <img th:src="@{'https://bookrental-staging.onrender.com/'+${imageName}}" alt="Book Image">
 
         <p>We hope you enjoy reading <strong th:text="${object.getBook().getName()}"></strong>.</p>
         <p th:text="'You are expected to return before '+ ${object.getToDate()}+'.' "></p>
