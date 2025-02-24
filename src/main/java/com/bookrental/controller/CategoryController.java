@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(path = "/api/category")
 @Tag(name = "Category", description = "Endpoints for managing Category related activities.")
-@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
 public class CategoryController extends BaseController {
 
     private final CategoryService categoryService;
