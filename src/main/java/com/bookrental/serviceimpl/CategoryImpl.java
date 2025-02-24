@@ -5,6 +5,7 @@ import com.bookrental.dto.PaginatedResponse;
 import com.bookrental.exceptions.ResourceAlreadyExist;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.CoustomBeanUtils;
+import com.bookrental.helper.pagination.CustomPageable;
 import com.bookrental.helper.pagination.PaginationRequest;
 import com.bookrental.model.Category;
 import com.bookrental.repository.CategoryRepo;
@@ -57,7 +58,7 @@ public class CategoryImpl implements CategoryService {
 
     @Override
     public PaginatedResponse getPaginatedCategoryList(PaginationRequest paginationRequest) {
-        Page<Map<String, Object>> response = categoryRepo.filterCategoryPaginated(paginationRequest.getSearchField(), paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getPageable());
+        Page<Map<String, Object>> response = categoryRepo.filterCategoryPaginated(paginationRequest.getSearchField(), paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), CustomPageable.getPageable(paginationRequest));
         return PaginatedResponse.builder().content(response.getContent()).totalElements(response.getTotalElements()).currentPageIndex(response.getNumber()).numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();
 
     }

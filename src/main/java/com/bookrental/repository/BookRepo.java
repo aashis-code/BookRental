@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,6 +34,7 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
 	@Query(value = "select photo as path from book where id = ?1", nativeQuery = true)
 	Optional<String> getBookImagePath(Integer id);
 
+	@Transactional
 	@Modifying
 	@Query(value = "update book set deleted=true where id= ?1", nativeQuery = true)
 	int deleteBookById(Integer bookId);
@@ -50,10 +52,10 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
 	
 	List<Book> findAllByDeleted(Boolean deleted);
 	
-    @Query(value = "select id, name, isbn,number_of_pages,published_date, rating, photo, stock_count, created_by , to_char(created_date, 'YYYY-MM-DD HH:MI:SS') as created_date,\n" +
-			"to_char(modified_date, 'YYYY-MM-DD HH:MI:SS') as last_modified_date from book where name ilike concat('%',?1,'%')\n" +
+    @Query(value = "select id, name, isbn,number_of_pages as \"numberOfPages\",published_date as \"publishedDate\", rating, photo, stock_count as \"stockCount\", to_char(created_date, 'YYYY-MM-DD HH:MI:SS') as \"createdDate\",\n" +
+			"to_char(modified_date, 'YYYY-MM-DD HH:MI:SS') as \"lastModifiedDate\" from book where name ilike concat('%',?1,'%')\n" +
 			"and created_date between coalesce(?2, created_date) and coalesce(?3, created_date) and (?4 is null or deleted = ?4)\n" +
-			"order by (case when ?5 is not null then ?5 end) asc", nativeQuery = true)
+			"order by ?5 ", nativeQuery = true)
 	Page<Map<String, Object>> filterBookAndPagination(
 			                   String keyword,
 			                   LocalDate startDate,

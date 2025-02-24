@@ -1,5 +1,6 @@
 package com.bookrental.dto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -8,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BookResponse {
+public class BookResponse implements Serializable {
 
 	private Integer id;
 

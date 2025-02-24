@@ -8,7 +8,9 @@ import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.CoustomBeanUtils;
 import com.bookrental.helper.ExcelHelper;
 import com.bookrental.helper.UserDataConfig;
+import com.bookrental.helper.excel.GenericExcelSheetGenerator;
 import com.bookrental.helper.pagination.BookPaginationRequest;
+import com.bookrental.helper.pagination.CustomPageable;
 import com.bookrental.model.Author;
 import com.bookrental.model.Book;
 import com.bookrental.model.Category;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -45,6 +48,8 @@ public class BookImpl implements BookService {
     private final BookRepo bookRepo;
 
     private final UserDataConfig userDataConfig;
+
+    private final GenericExcelSheetGenerator<BookResponse> bookSheetGenerator;
 
     @Override
     public boolean bookSaveAndUpdate(ListOfBookRequest bookAddRequests) {
@@ -111,20 +116,20 @@ public class BookImpl implements BookService {
 
     @Override
     public PaginatedResponse getPaginatedBookList(BookPaginationRequest paginationRequest) {
-        Page<Map<String, Object>> response = bookRepo.filterBookAndPagination(paginationRequest.getSearchField(), paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getOrderBy().toString(), paginationRequest.getPageable());
+        Page<Map<String, Object>> response = bookRepo.filterBookAndPagination(paginationRequest.getSearchField(), paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getSortBy(), CustomPageable.getPageable(paginationRequest));
 
-        Page<Map<String, Object>> bookList = response.map(book -> {
-            Map<String, Object> record = new HashMap<>(book);
-            try {
-                record.put("imageBase64",getImageBase64((Integer)book.get("id")));
-            } catch (IOException e) {
-                record.put("imageBase64",null);
-            }
-            return record;
-        });
+//        Page<Map<String, Object>> bookList = response.map(book -> {
+//            Map<String, Object> record = new HashMap<>(book);
+//            try {
+//                record.put("imageBase64",getImageBase64((Integer)book.get("id")));
+//            } catch (IOException e) {
+//                record.put("imageBase64",null);
+//            }
+//            return record;
+//        });
 
-        return PaginatedResponse.builder().content(bookList.getContent())
-                .totalElements(response.getTotalElements()).currentPageIndex(response.getNumber())
+        return PaginatedResponse.builder().content(response.getContent())
+                .totalElements(response.getTotalElements()).currentPageIndex(response.getNumber()+1)
                 .numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();
     }
 
@@ -161,12 +166,19 @@ public class BookImpl implements BookService {
         List<BookResponse> books = getAllBooks();
         ByteArrayInputStream byteArrayInputStream;
         try {
-            byteArrayInputStream = ExcelHelper.exportToExcel(books);
+            byteArrayInputStream = bookSheetGenerator.getExcelSheet(books);
+//            byteArrayInputStream = ExcelHelper.exportToExcel(books);
             response.setContentType("application/vnd.ms-excel");
             response.setHeader("Content-Disposition", "attachment; filename=\"books.xls\"");
             byteArrayInputStream.transferTo(response.getOutputStream());
             response.getOutputStream().flush();
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }

@@ -6,7 +6,10 @@ import com.bookrental.exceptions.AppException;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.CoustomBeanUtils;
 import com.bookrental.helper.UserDataConfig;
+import com.bookrental.helper.pagination.CustomPageable;
 import com.bookrental.helper.pagination.PaginationRequest;
+import com.bookrental.mapper.author.AuthorMapper;
+import com.bookrental.mapper.author.AuthorResponse;
 import com.bookrental.model.Author;
 import com.bookrental.repository.AuthorRepo;
 import com.bookrental.service.AuthorService;
@@ -29,13 +32,13 @@ public class AuthorImpl implements AuthorService {
 
     private AuthorRepo authorRepo;
 
-    private UserDataConfig userDataConfig;
+    private AuthorMapper authorMapper;
 
     private Logger logger = LoggerFactory.getLogger(AuthorImpl.class);
 
-    public AuthorImpl(AuthorRepo authorRepo, UserDataConfig userDataConfig) {
+    public AuthorImpl(AuthorRepo authorRepo, AuthorMapper authorMapper) {
         this.authorRepo = authorRepo;
-        this.userDataConfig = userDataConfig;
+        this.authorMapper = authorMapper;
     }
 
     @Override
@@ -55,25 +58,25 @@ public class AuthorImpl implements AuthorService {
     }
 
     @Override
-    public Author getAuthorById(Integer authorId) {
+    public AuthorResponse getAuthorById(Integer authorId) {
         if (authorId < 1) {
             throw new ResourceNotFoundException("Invalid author Id.", null);
         }
-        return authorRepo.findByIdAndDeleted(authorId, Boolean.FALSE)
-                .orElseThrow(() -> new ResourceNotFoundException("AuthorId", String.valueOf(authorId)));
+        return authorMapper.findAuthorByIdAndDeleted(authorId, Boolean.FALSE);
+//                .orElseThrow(() -> new ResourceNotFoundException("AuthorId", String.valueOf(authorId)));
     }
 
     @Override
-    public List<Author> getAllAuthors() {
-
-        return authorRepo.findByDeleted(Boolean.FALSE);
+    public List<AuthorResponse> getAllAuthors() {
+          return authorMapper.getNonPageableAuthor();
+//        return authorRepo.findByDeleted(Boolean.FALSE);
     }
 
     @Override
     public PaginatedResponse getPaginatedAuthorList(PaginationRequest paginationRequest) {
-        Page<Map<String, Object>> response = authorRepo.filterAuthorPaginated(paginationRequest.getSearchField(), paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getPageable());
+        Page<Map<String, Object>> response = authorRepo.filterAuthorPaginated(paginationRequest.getSearchField(), paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), CustomPageable.getPageable(paginationRequest));
         return PaginatedResponse.builder().content(response.getContent())
-                .totalElements(response.getTotalElements()).currentPageIndex(response.getNumber())
+                .totalElements(response.getTotalElements()).currentPageIndex(response.getNumber()+1)
                 .numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();
     }
 

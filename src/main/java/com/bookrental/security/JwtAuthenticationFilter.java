@@ -64,7 +64,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (JwtException e) {
             sendErrorResponse(response, "Invalid JWT Token");
         } catch (Exception e) {
-            sendErrorResponse(response, "Authentication error");
+            sendErrorResponse(response, "Authentication error"+ e.getLocalizedMessage());
         }
     }
 

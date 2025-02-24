@@ -12,6 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +23,7 @@ public class GenericExcelSheetGenerator<T> {
     public ByteArrayInputStream getExcelSheet(List<T> t) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
         Workbook workbook = new XSSFWorkbook();
-        Class<?> className = t.getClass();
+        Class<?> className = t.get(0).getClass();
         Sheet sheet = workbook.createSheet(className.getName());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Row headerRow = sheet.createRow(0);
@@ -48,7 +49,7 @@ public class GenericExcelSheetGenerator<T> {
                 } else if (value instanceof Boolean) {
                     cell.setCellValue((Boolean) value);
                 } else if (value instanceof LocalDate) {
-                    cell.setCellValue((LocalDate) value);
+                    cell.setCellValue(Date.valueOf(String.valueOf(value)));
                 } else if (value != null) {
                     cell.setCellValue(value.toString());
                 } else {

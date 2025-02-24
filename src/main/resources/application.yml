@@ -60,3 +60,10 @@ springdoc:
 web:
   resources:
    static-locations: file:/opt/images/
+
+mybatis:
+  mapper-locations: classpath*:/mybatis/*.xml # Tells mybatis to look in resources/mybatis for XML com.infodev.oauthserver.mappers
+  type-aliases-package: com.bookrental.mapper.* # Tells mybatis to look for our POJO class in the right package
+  configuration:
+    map-underscore-to-camel-case: true
+    default-type-handler: com.bookrental.config.JsonTypeHandler

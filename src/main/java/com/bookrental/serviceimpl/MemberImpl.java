@@ -5,6 +5,7 @@ import com.bookrental.dto.PaginatedResponse;
 import com.bookrental.exceptions.ResourceNotFoundException;
 import com.bookrental.helper.CoustomBeanUtils;
 import com.bookrental.helper.pagination.BookPaginationRequest;
+import com.bookrental.helper.pagination.CustomPageable;
 import com.bookrental.helper.pagination.PaginationRequest;
 import com.bookrental.model.Member;
 import com.bookrental.model.Role;
@@ -82,7 +83,7 @@ public class MemberImpl implements MemberService {
 
     @Override
     public PaginatedResponse getPaginatedMemberList(PaginationRequest paginationRequest) {
-        Page<Map<String, Object>> response = memberRepo.filterMemberPaginated(paginationRequest.getSearchField(), paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getPageable());
+        Page<Map<String, Object>> response = memberRepo.filterMemberPaginated(paginationRequest.getSearchField(), paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), CustomPageable.getPageable(paginationRequest));
         return PaginatedResponse.builder().content(response.getContent()).totalElements(response.getTotalElements()).currentPageIndex(response.getNumber()).numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();
 
     }

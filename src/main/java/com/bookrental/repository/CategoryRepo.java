@@ -28,8 +28,8 @@ public interface CategoryRepo extends JpaRepository<Category, Integer> {
 
 	List<Category> findAllByDeleted(Pageable page, Boolean deleted);
 
-	@Query(value = "select id, name, description , created_by , to_char(created_date, 'YYYY-MM-DD HH:MI:SS') as created_date,\n" +
-			"last_modified_by, to_char(modified_date, 'YYYY-MM-DD HH:MI:SS') as last_modified_date from category where \n" +
+	@Query(value = "select id, name, description , created_by as \"createdBy\" , to_char(created_date, 'YYYY-MM-DD HH:MI:SS') as \"createdDate\",\n" +
+			"last_modified_by as \"lastModifiedBy\", to_char(modified_date, 'YYYY-MM-DD HH:MI:SS') as \"lastModifiedDate\" from category where \n" +
 			"(?1 is null or name ilike concat('%',?1,'%') or description ilike concat('%',?1,'%'))\n" +
 			"and created_date between coalesce(?2, created_date) and coalesce(?3, created_date) and (?4 is null or deleted = ?4)",
 			nativeQuery = true)

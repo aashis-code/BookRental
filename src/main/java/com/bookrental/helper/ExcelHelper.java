@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Date;
 import java.util.*;
 
 public class ExcelHelper {
@@ -49,8 +50,7 @@ public class ExcelHelper {
             bookAddRequest.setIsbn(String.valueOf(getCellValue(row.getCell(2))));
             bookAddRequest.setRating(Double.parseDouble(getCellValue(row.getCell(3))));
             bookAddRequest.setStockCount(Integer.parseInt(getCellValue(row.getCell(4))));
-//			bookAddRequest.setPublishedDate(java.sql.Date.valueOf(getCellValue(row.getCell(5))));
-//            bookAddRequest.setPhoto(getCellValue(row.getCell(6)));
+			bookAddRequest.setPublishedDate(Date.valueOf(getCellValue(row.getCell(5))).toLocalDate());
 
 
             String authorIdsCell = getCellValue(row.getCell(7));

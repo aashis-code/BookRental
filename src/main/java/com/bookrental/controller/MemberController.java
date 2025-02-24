@@ -47,10 +47,10 @@ public class MemberController extends BaseController {
         return new ResponseObject(true, "Success on member entity operation !!", memberService.saveAndUpdateMember(memberDto));
     }
 
-    @GetMapping("/{memberId}")
-    @PreAuthorize("hasPermission(#memberId,'MEMBER','fetch_profile')")
-    public ResponseObject getMemberById(@PathVariable Integer memberId) {
-        MemberDto member = memberService.getMemberById(memberId);
+    @GetMapping("/{id}")
+    @PreAuthorize("hasPermission(#id,'MEMBER','fetch_profile')")
+    public ResponseObject getMemberById(@PathVariable Integer id) {
+        MemberDto member = memberService.getMemberById(id);
         return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.MEMBER_CONTROLLER), member);
     }
 
@@ -68,9 +68,9 @@ public class MemberController extends BaseController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @DeleteMapping("/{memberId}")
-    public ResponseObject deleteMember(@PathVariable Integer memberId) {
-        memberService.deleteMember(memberId);
+    @DeleteMapping("/{id}")
+    public ResponseObject deleteMember(@PathVariable Integer id) {
+        memberService.deleteMember(id);
         return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_DELETE, ModuleNameConstants.MEMBER_CONTROLLER), true);
     }
 

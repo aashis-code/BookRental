@@ -10,8 +10,10 @@ import com.bookrental.helper.RentType;
 import com.bookrental.helper.UserDataConfig;
 import com.bookrental.helper.email.EmailDetails;
 import com.bookrental.helper.email.EmailService;
-import com.bookrental.helper.email.EmailServiceImpl;
 import com.bookrental.helper.pagination.BookPaginationRequest;
+import com.bookrental.helper.pagination.CustomPageable;
+import com.bookrental.mapper.booktransaction.DashBoardBookTransaction;
+import com.bookrental.mapper.booktransaction.DashBoardMapper;
 import com.bookrental.model.Book;
 import com.bookrental.model.BookTransaction;
 import com.bookrental.model.Member;
@@ -43,6 +45,8 @@ public class BookTransactionImpl implements BookTransactionService {
     private final EmailService<BookTransaction> emailService;
 
     private final UserDataConfig userDataConfig;
+
+    private final DashBoardMapper dashBoardMapper;
 
     // Renting book Operation
     @Override
@@ -110,10 +114,15 @@ public class BookTransactionImpl implements BookTransactionService {
         } else{
             memberId = userDataConfig.getMemberId();
         }
-        Page<Map<String, Object>> response = bookTransactionRepo.filterBookTransactionAndPagination(paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getBookId(), memberId, paginationRequest.getRentStatus()!=null?paginationRequest.getRentStatus().toString():null, paginationRequest.getPageable());
+        Page<Map<String, Object>> response = bookTransactionRepo.filterBookTransactionAndPagination(paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getBookId(), memberId, paginationRequest.getRentStatus()!=null?paginationRequest.getRentStatus().toString():null, CustomPageable.getPageable(paginationRequest));
         return PaginatedResponse.builder().content(response.getContent())
                 .totalElements(response.getTotalElements()).currentPageIndex(response.getNumber())
                 .numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();
+    }
+
+    @Override
+    public DashBoardBookTransaction getDashBoardMapper() {
+        return dashBoardMapper.getBookDashBoard();
     }
 
 

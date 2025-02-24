@@ -40,8 +40,8 @@ public interface MemberRepo extends JpaRepository<Member, Integer> {
 	@Query(value="select * from member where deleted = ?1", nativeQuery = true)
 	List<Member> findAllMember(Boolean deleted);
 	
-	@Query(value = "select id, name, email, mobile_number, address , created_by , to_char(created_date, 'YYYY-MM-DD HH24:MI:SS') as created_date, "
-			+ "to_char(modified_date, 'YYYY-MM-DD HH24:MI:SS') as last_modified_date from member where "
+	@Query(value = "select id, name, email, mobile_number as \"mobileNumber\", address , to_char(created_date, 'YYYY-MM-DD HH24:MI:SS') as \"createdDate\", "
+			+ "to_char(modified_date, 'YYYY-MM-DD HH24:MI:SS') as \"lastModifiedDate\" from member where "
 			+ "(?1 is null or name ilike concat('%',?1,'%')) "
 			+ "and created_date between coalesce(?2, created_date) and coalesce(?3, created_date) and (?4 is null or deleted = ?4)", 
 			nativeQuery = true)
