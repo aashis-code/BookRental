@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,6 +18,7 @@ public interface CategoryRepo extends JpaRepository<Category, Integer> {
 
 	Optional<Category> findByName(String name);
 
+	@Transactional
 	@Modifying
 	@Query(value = "update category set deleted = true where id = ?1", nativeQuery = true)
 	int deleteCategoryById(Integer categoryId);

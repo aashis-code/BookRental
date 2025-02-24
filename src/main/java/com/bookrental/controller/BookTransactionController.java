@@ -12,10 +12,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 @RequiredArgsConstructor
 @RestController
@@ -53,6 +57,20 @@ public class BookTransactionController extends BaseController {
     public ResponseObject getPaginatedBookTransaction(@RequestBody BookPaginationRequest paginationRequest) {
         return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.BOOK_TRANSACTION_CONTROLLER), bookTransactionService.getPaginatedBookTransaction(paginationRequest));
     }
+
+    @Operation(
+            summary = "This api is used to fetch pageable book response in excel sheet.",
+            description = "",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successfully Operation.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseObject.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid request.")
+            }
+    )
+    @PostMapping("/excel")
+    public void getPaginatedBookTransactionInExcel(@RequestBody BookPaginationRequest paginationRequest, HttpServletResponse response) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        bookTransactionService.getBookTransactionOnExcel(paginationRequest,response);
+ }
 
     @Operation(
             summary = "This api is used to fetch dashboard for librarian or admin.",

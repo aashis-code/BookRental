@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -36,6 +37,7 @@ public interface AuthorRepo extends GenericRepo<Author, Integer> {
 	@Query(value = "select * from author where email = ?1 or mobile_number = ?2 and deleted = ?3", nativeQuery = true)
 	List<Author> findByEmailOrPhoneNumber(String email, String phoneNumber, Boolean deleted);
 
+	@Transactional
 	@Modifying
 	@Query(value = "update author set deleted=true where id= ?1", nativeQuery = true)
 	int deleteAuthorById(Integer authorId);

@@ -3,6 +3,7 @@ package com.bookrental.repository;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -17,7 +18,8 @@ public interface RoleRepo extends JpaRepository<Role, Integer> {
 	Optional<Role> findByName(String name);
 	
 	List<Role> findAllByDeleted(Pageable page, Boolean deleted);
-	
+
+	@Transactional
 	@Modifying
 	@Query(value = "update role set deleted = true where id =?1", nativeQuery = true)
 	int deleteRoleById(Integer roleId);

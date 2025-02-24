@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,9 +27,11 @@ public interface MemberRepo extends JpaRepository<Member, Integer> {
 
 	Optional<Member> findByIdAndDeleted(Integer memberId, Boolean deleted);
 
+	@Transactional
 	@Query(value = "selectfilterMemberPaginated * from member where email = ?1 or mobile_number = ?2 and deleted = ?3", nativeQuery = true)
 	List<Member> findByEmailOrPhoneNumber(String email, String phoneNumber, Boolean deleted);
 
+	@Transactional
 	@Modifying
 	@Query(value = "update member set deleted=true where id= ?1", nativeQuery = true)
 	int deleteMemberById(Integer memberId);

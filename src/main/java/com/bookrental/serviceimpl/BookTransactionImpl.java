@@ -2,6 +2,7 @@
 
 package com.bookrental.serviceimpl;
 
+import com.bookrental.dto.BookResponse;
 import com.bookrental.dto.BookTransactionDto;
 import com.bookrental.dto.PaginatedResponse;
 import com.bookrental.exceptions.AppException;
@@ -10,8 +11,11 @@ import com.bookrental.helper.RentType;
 import com.bookrental.helper.UserDataConfig;
 import com.bookrental.helper.email.EmailDetails;
 import com.bookrental.helper.email.EmailService;
+import com.bookrental.helper.excel.GenericExcelSheetGenerator;
 import com.bookrental.helper.pagination.BookPaginationRequest;
 import com.bookrental.helper.pagination.CustomPageable;
+import com.bookrental.mapper.booktransaction.BookTransactionDetails;
+import com.bookrental.mapper.booktransaction.BookTransactionMapper;
 import com.bookrental.mapper.booktransaction.DashBoardBookTransaction;
 import com.bookrental.mapper.booktransaction.DashBoardMapper;
 import com.bookrental.model.Book;
@@ -21,12 +25,15 @@ import com.bookrental.repository.BookRepo;
 import com.bookrental.repository.BookTransactionRepo;
 import com.bookrental.repository.MemberRepo;
 import com.bookrental.service.BookTransactionService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +54,10 @@ public class BookTransactionImpl implements BookTransactionService {
     private final UserDataConfig userDataConfig;
 
     private final DashBoardMapper dashBoardMapper;
+
+    private final BookTransactionMapper bookTransactionMapper;
+
+    private final GenericExcelSheetGenerator<BookTransactionDetails> bookSheetGenerator;
 
     // Renting book Operation
     @Override
@@ -118,6 +129,14 @@ public class BookTransactionImpl implements BookTransactionService {
         return PaginatedResponse.builder().content(response.getContent())
                 .totalElements(response.getTotalElements()).currentPageIndex(response.getNumber())
                 .numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();
+    }
+
+
+    @Override
+    public void getBookTransactionOnExcel(BookPaginationRequest request, HttpServletResponse response) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        Integer offset=(request.getPage()+1)*request.getSize();
+        List<BookTransactionDetails> bookTransactionDetails = bookTransactionMapper.filterBookTransaction(request.getFromDate(), request.getToDate(), request.getIsDeleted(), request.getBookId(), request.getMemberId(),request.getRentStatus()!=null?request.getRentStatus().toString():null, offset, request.getSize());
+        bookSheetGenerator.getExcelSheet(bookTransactionDetails);
     }
 
     @Override
