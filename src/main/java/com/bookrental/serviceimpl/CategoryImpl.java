@@ -29,16 +29,19 @@ public class CategoryImpl implements CategoryService {
     public boolean categorySaveAndUpdate(CategoryDto categoryDto) {
         Category category = null;
         if (categoryDto.getId() != null) {
-            category = categoryRepo.findById(categoryDto.getId()).orElseThrow(() -> new RuntimeException("Category id not found"));
+            category = categoryRepo.findByIdAndDeleted(categoryDto.getId(), Boolean.FALSE).orElseThrow(() -> new RuntimeException("Category id not found"));
         } else {
             String name = categoryDto.getName().trim();
-            Optional<Category> byName = categoryRepo.findByName(name);
+            Optional<Category> byName = categoryRepo.findByNameAndDeleted(name,Boolean.TRUE);
             if (byName.isPresent()) {
-                throw new ResourceAlreadyExist("Category Name", name);
+                category = byName.get();
+                category.setDescription(categoryDto.getDescription().trim());
+                category.setDeleted(Boolean.FALSE);
+            } else{
+                category = new Category();
+                CoustomBeanUtils.copyNonNullProperties(categoryDto, category);
             }
         }
-        category = new Category();
-        CoustomBeanUtils.copyNonNullProperties(categoryDto, category);
         categoryRepo.save(category);
         return true;
     }

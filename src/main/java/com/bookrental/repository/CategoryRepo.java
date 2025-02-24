@@ -25,6 +25,8 @@ public interface CategoryRepo extends JpaRepository<Category, Integer> {
 
 	Optional<Category> findByIdAndDeleted(Integer id, Boolean deleted);
 
+	Optional<Category> findByNameAndDeleted(String name, boolean deleted);
+
 	@Query(value = "select * from category where deleted = ?1", nativeQuery = true)
 	List<Category> findAllCategoryByIsDeleted(Boolean deleted);
 
