@@ -26,10 +26,10 @@ public class RoleController extends BaseController {
         return getSuccessResponse("Successfully updated role !!", result);
     }
 
-    @GetMapping("/{roleId}")
+    @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseObject getRoleById(@PathVariable Integer roleId) {
-        return getSuccessResponse("Success !!", roleService.getRoleById(roleId));
+    public ResponseObject getRoleById(@PathVariable Integer id) {
+        return getSuccessResponse("Success !!", roleService.getRoleById(id));
     }
 
     @GetMapping("")
@@ -42,10 +42,10 @@ public class RoleController extends BaseController {
 		return getSuccessResponse("Successfully fetched paginated data.", roleService.getPaginatedRoleList(paginationRequest.getPage(), paginationRequest.getSize()));
 	}
 
-    @DeleteMapping("/{roleId}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseObject deleteRole(@PathVariable Integer roleId) {
-    	roleService.roleDelete(roleId);
+    public ResponseObject deleteRole(@PathVariable Integer id) {
+    	roleService.roleDelete(id);
         return getSuccessResponse("Successfully deleted member !!", true);
     }
 

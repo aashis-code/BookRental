@@ -28,9 +28,9 @@ public class CategoryController extends BaseController {
         return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_UPDATE, ModuleNameConstants.CATEGORY_CONTROLLER), categoryService.categorySaveAndUpdate(categoryDto));
     }
 
-    @GetMapping("/{categoryId}")
-    public ResponseObject getCategoryById(@PathVariable Integer categoryId) {
-        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.CATEGORY_CONTROLLER), categoryService.getCategoryById(categoryId));
+    @GetMapping("/{id}")
+    public ResponseObject getCategoryById(@PathVariable Integer id) {
+        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.CATEGORY_CONTROLLER), categoryService.getCategoryById(id));
     }
 
     @GetMapping("/")
@@ -43,9 +43,9 @@ public class CategoryController extends BaseController {
         return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.CATEGORY_CONTROLLER), categoryService.getPaginatedCategoryList(paginationRequest));
     }
 
-    @DeleteMapping("/{categoryId}")
-    public ResponseObject deleteRoleId(@PathVariable Integer categoryId) {
-        categoryService.deleteCategoryById(categoryId);
+    @DeleteMapping("/{id}")
+    public ResponseObject deleteRoleId(@PathVariable Integer id) {
+        categoryService.deleteCategoryById(id);
         return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_DELETE, ModuleNameConstants.CATEGORY_CONTROLLER), true);
 
     }
