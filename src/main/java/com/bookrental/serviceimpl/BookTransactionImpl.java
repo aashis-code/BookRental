@@ -32,6 +32,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
@@ -117,15 +118,15 @@ public class BookTransactionImpl implements BookTransactionService {
     @Override
     public PaginatedResponse getPaginatedBookTransaction(BookPaginationRequest paginationRequest) {
         Integer memberId;
-        if(userDataConfig.getMemberId() == null) {
+        if (userDataConfig.getMemberId() == null) {
             throw new AppException("You have not logged in.");
         }
-        if(userDataConfig.isAdminOrLibrarian()) {
-            memberId = paginationRequest.getMemberId() != null?paginationRequest.getMemberId():null;
-        } else{
+        if (userDataConfig.isAdminOrLibrarian()) {
+            memberId = paginationRequest.getMemberId() != null ? paginationRequest.getMemberId() : null;
+        } else {
             memberId = userDataConfig.getMemberId();
         }
-        Page<Map<String, Object>> response = bookTransactionRepo.filterBookTransactionAndPagination(paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getBookId(), memberId, paginationRequest.getRentStatus()!=null?paginationRequest.getRentStatus().toString():null, CustomPageable.getPageable(paginationRequest));
+        Page<Map<String, Object>> response = bookTransactionRepo.filterBookTransactionAndPagination(paginationRequest.getFromDate(), paginationRequest.getToDate(), paginationRequest.getIsDeleted(), paginationRequest.getBookId(), memberId, paginationRequest.getRentStatus() != null ? paginationRequest.getRentStatus().toString() : null, CustomPageable.getPageable(paginationRequest));
         return PaginatedResponse.builder().content(response.getContent())
                 .totalElements(response.getTotalElements()).currentPageIndex(response.getNumber())
                 .numberOfElements(response.getNumberOfElements()).totalPages(response.getTotalPages()).build();
@@ -133,12 +134,22 @@ public class BookTransactionImpl implements BookTransactionService {
 
 
     @Override
-    public void getBookTransactionOnExcel(BookPaginationRequest request, HttpServletResponse response) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        Integer offset=(request.getPage()+1)*request.getSize();
+    public void getBookTransactionOnExcel(BookPaginationRequest request, HttpServletResponse response) throws InvocationTargetException{
+        Integer offset = (request.getPage() + 1) * request.getSize();
         List<BookTransactionDetails> bookTransactionDetails = bookTransactionMapper.filterBookTransaction(request.getFromDate(),
-                request.getToDate(), request.getIsDeleted(), request.getBookId(), request.getMemberId(),
-                request.getRentStatus()!=null?request.getRentStatus().toString():null, offset, request.getSize());
-        bookSheetGenerator.getExcelSheet(bookTransactionDetails);
+                request.getToDate(), request.getIsDeleted(), request.getBookId() != null ? request.getBookId() : -1,
+                request.getMemberId() != null ? request.getMemberId() : -1,
+                request.getRentStatus() != null ? request.getRentStatus().toString() : "", offset, request.getSize());
+        ByteArrayInputStream byteArrayInputStream;
+        try {
+            byteArrayInputStream = bookSheetGenerator.getExcelSheet(bookTransactionDetails);
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment; filename=\"bookTransaction.xls\"");
+            byteArrayInputStream.transferTo(response.getOutputStream());
+            response.getOutputStream().flush();
+        } catch (IOException | RuntimeException | NoSuchMethodException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -149,22 +160,22 @@ public class BookTransactionImpl implements BookTransactionService {
 
     @Scheduled(cron = "0 0 12 * * *")
     @Override
-    public void getBookTransactionLessThanOneDayRemain(){
+    public void getBookTransactionLessThanOneDayRemain() {
         List<Map<String, Object>> bookTran = bookTransactionRepo.findAllBookTransactionForSchedular();
 
         for (Map<String, Object> bookObj : bookTran) {
             emailService.sendMailWithAttachment(EmailDetails.builder()
-                    .subject("Reminder for returning book.")
-                    .attachment("book-return-deadline")
-                    .msgBody("Please return your book.")
-                    .recipient(bookObj.get("email").toString())
+                            .subject("Reminder for returning book.")
+                            .attachment("book-return-deadline")
+                            .msgBody("Please return your book.")
+                            .recipient(bookObj.get("email").toString())
 //                            .recipient("aashisdev057@gmail.com")
-                    .build(),
+                            .build(),
                     BookTransaction.builder()
-                    .book(Book.builder().name(bookObj.get("bookname").toString()).photo(bookObj.get("photo").toString()).build())
-                    .member(Member.builder().email(bookObj.get("email").toString()).name(bookObj.get("name").toString()).build())
-                    .toDate(LocalDate.parse(bookObj.get("deadline").toString()))
-                    .build());
-            }
+                            .book(Book.builder().name(bookObj.get("bookname").toString()).photo(bookObj.get("photo").toString()).build())
+                            .member(Member.builder().email(bookObj.get("email").toString()).name(bookObj.get("name").toString()).build())
+                            .toDate(LocalDate.parse(bookObj.get("deadline").toString()))
+                            .build());
+        }
     }
 }
