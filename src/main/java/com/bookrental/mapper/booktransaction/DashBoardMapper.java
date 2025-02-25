@@ -1,7 +1,11 @@
 package com.bookrental.mapper.booktransaction;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @Mapper
 public interface DashBoardMapper {
@@ -95,6 +99,18 @@ public interface DashBoardMapper {
             "        ORDER BY timesBorrowed DESC \n" +
             "        LIMIT 10\n" +
             "    ) t) AS mostBorrowedBook \n")
+//    @Results({
+//            @Result(property = "totalBookIssued", column = "totalBookIssued"),
+//            @Result(property = "totalBooksReturned", column = "totalBooksReturned"),
+//            @Result(property = "totalOverdueBooks", column = "totalOverdueBooks"),
+//            @Result(property = "uniqueBorrowers", column = "uniqueBorrowers"),
+//            @Result(property = "activeTransaction", column = "activeTransaction"),
+//            @Result(property = "overDueBookList", column = "overDueBookList", javaType = List.class),
+//            @Result(property = "recentBookTransaction", column = "recentBookTransaction", javaType = List.class),
+//            @Result(property = "booksBorrowedPerDay", column = "booksBorrowedPerDay", javaType = List.class),
+//            @Result(property = "topBorrowers", column = "topBorrowers", javaType = List.class),
+//            @Result(property = "mostBorrowedBook", column = "mostBorrowedBook", javaType = List.class)
+//    })
     DashBoardBookTransaction getBookDashBoard();
 
 }

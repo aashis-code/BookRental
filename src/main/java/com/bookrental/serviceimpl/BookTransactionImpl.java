@@ -2,7 +2,7 @@
 
 package com.bookrental.serviceimpl;
 
-import com.bookrental.dto.BookResponse;
+import aj.org.objectweb.asm.TypeReference;
 import com.bookrental.dto.BookTransactionDto;
 import com.bookrental.dto.PaginatedResponse;
 import com.bookrental.exceptions.AppException;
@@ -14,10 +14,7 @@ import com.bookrental.helper.email.EmailService;
 import com.bookrental.helper.excel.GenericExcelSheetGenerator;
 import com.bookrental.helper.pagination.BookPaginationRequest;
 import com.bookrental.helper.pagination.CustomPageable;
-import com.bookrental.mapper.booktransaction.BookTransactionDetails;
-import com.bookrental.mapper.booktransaction.BookTransactionMapper;
-import com.bookrental.mapper.booktransaction.DashBoardBookTransaction;
-import com.bookrental.mapper.booktransaction.DashBoardMapper;
+import com.bookrental.mapper.booktransaction.*;
 import com.bookrental.model.Book;
 import com.bookrental.model.BookTransaction;
 import com.bookrental.model.Member;
@@ -25,6 +22,7 @@ import com.bookrental.repository.BookRepo;
 import com.bookrental.repository.BookTransactionRepo;
 import com.bookrental.repository.MemberRepo;
 import com.bookrental.service.BookTransactionService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +57,8 @@ public class BookTransactionImpl implements BookTransactionService {
     private final BookTransactionMapper bookTransactionMapper;
 
     private final GenericExcelSheetGenerator<BookTransactionDetails> bookSheetGenerator;
+
+    private final ObjectMapper objectMapper= new ObjectMapper();
 
     // Renting book Operation
     @Override
@@ -154,7 +154,26 @@ public class BookTransactionImpl implements BookTransactionService {
 
     @Override
     public DashBoardBookTransaction getDashBoardMapper() {
-        return dashBoardMapper.getBookDashBoard();
+        DashBoardBookTransaction bookDashBoard = dashBoardMapper.getBookDashBoard();
+        try{
+//            bookDashBoard.setOverDueBookList(objectMapper.readValue(bookDashBoard.getOverDueBookList(),
+//                    new TypeReference<List<OverdueBookDto>>(){}));
+//            bookDashBoard.setRecentBookTransaction(objectMapper.readValue(bookDashBoard.getRecentBookTransaction(),
+//                    new TypeReference<List<RecentTransactionDto>>() {}));
+//
+//            bookDashBoard.setBooksBorrowedPerDay(objectMapper.readValue(bookDashBoard.getBooksBorrowedPerDay(),
+//                    new TypeReference<List<BookBorrowedPerDayDto>>() {}));
+//
+//            bookDashBoard.setTopBorrowers(objectMapper.readValue(bookDashBoard.getTopBorrowers(),
+//                    new TypeReference<List<TopBorrowerDto>>() {}));
+//
+//            bookDashBoard.setMostBorrowedBook(objectMapper.readValue(bookDashBoard.getMostBorrowedBook(),
+//                    new TypeReference<List<MostBorrowedBookDto>>() {}));
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return bookDashBoard;
     }
 
 

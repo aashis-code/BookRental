@@ -68,7 +68,6 @@ public class BookTransactionController extends BaseController {
             }
     )
     @GetMapping("/excel")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public void getPaginatedBookTransactionInExcel(@RequestBody BookPaginationRequest paginationRequest, HttpServletResponse response) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         bookTransactionService.getBookTransactionOnExcel(paginationRequest,response);
  }

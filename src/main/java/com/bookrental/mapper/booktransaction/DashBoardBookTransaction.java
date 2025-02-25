@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -15,23 +14,23 @@ public class DashBoardBookTransaction {
     private int totalOverdueBooks;
     private int uniqueBorrowers;
     private int activeTransaction;
-    private List<OverdueBookDto> overDueBookList;
-    private List<RecentTransactionDto> recentBookTransaction;
-    private List<BookBorrowedPerDayDto> booksBorrowedPerDay;
-    private List<TopBorrowerDto> topBorrowers;
-    private List<MostBorrowedBookDto> mostBorrowedBook;
+    private String overDueBookList;
+    private String recentBookTransaction;
+    private String booksBorrowedPerDay;
+    private String topBorrowers;
+    private String mostBorrowedBook;
 }
 
-@Data
-@NoArgsConstructor
-class OverdueBookDto {
-    private Long bookId;
-    private String bookName;
-    private String isbn;
-    private String borrower;
-    private String email;
-    private int daysOverdue;
-}
+//@Data
+//@NoArgsConstructor
+//class OverdueBookDto {
+//    private Long bookId;
+//    private String bookName;
+//    private String isbn;
+//    private String borrower;
+//    private String email;
+//    private int daysOverdue;
+//}
 
 @Data
 @NoArgsConstructor
