@@ -19,6 +19,7 @@ import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -54,13 +55,14 @@ public class BookController extends BaseController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully Operation.",
                             content = @Content(mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = BookDto.class)))),
+                                    array = @ArraySchema(schema = @Schema(implementation = List.class)))),
                     @ApiResponse(responseCode = "400", description = "Invalid request.")
             }
     )
     @GetMapping("")
     public ResponseObject getAllBooks() {
-        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.BOOK_CONTROLLER), bookService.getAllBooks());
+//        bookService.getAllBooks()
+        return getSuccessResponse(customMessageSource.get(MessageConstants.CRUD_GET, ModuleNameConstants.BOOK_CONTROLLER), bookService.getAllBooksMapper());
     }
 
     @Operation(

@@ -20,6 +20,8 @@ public interface BookService {
 
 	List<BookResponse> getAllBooks();
 
+	List<Map<String,Object>> getAllBooksMapper();
+
 	PaginatedResponse getPaginatedBookList(BookPaginationRequest paginationRequest);
 
 	Map<String, Object> getBookById(Integer bookId);

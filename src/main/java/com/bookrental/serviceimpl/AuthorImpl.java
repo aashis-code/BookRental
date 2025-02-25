@@ -83,7 +83,7 @@ public class AuthorImpl implements AuthorService {
     @Override
     @Transactional
     public void deleteAuthor(Integer authorId) {
-        if (authorRepo.existsById(authorId)) {
+        if (!authorRepo.existsById(authorId)) {
             throw new ResourceNotFoundException("AuthorId", String.valueOf(authorId));
         }
         int result = authorRepo.deleteAuthorById(authorId);

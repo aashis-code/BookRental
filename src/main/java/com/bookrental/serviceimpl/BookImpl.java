@@ -18,6 +18,8 @@ import com.bookrental.repository.AuthorRepo;
 import com.bookrental.repository.BookRepo;
 import com.bookrental.repository.CategoryRepo;
 import com.bookrental.service.BookService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.compress.compressors.FileNameUtil;
@@ -48,6 +50,8 @@ public class BookImpl implements BookService {
     private final BookRepo bookRepo;
 
     private final UserDataConfig userDataConfig;
+
+    private final ObjectMapper objectMapper;
 
     private final GenericExcelSheetGenerator<BookResponse> bookSheetGenerator;
 
@@ -111,6 +115,26 @@ public class BookImpl implements BookService {
             bookResponse.add(bookAdd);
         }
         return bookResponse;
+    }
+
+    @Override
+    public List<Map<String, Object>> getAllBooksMapper() {
+        List<Map<String, Object>> allBooks = bookRepo.getAllBooks();
+        List<Map<String, Object>> allBooksUpdated = new ArrayList<>();
+        for (Map<String, Object> book : allBooks) {
+            Map<String, Object> b = new HashMap<>(book);
+            if(b.containsKey("authors") && b.get("authors") != null) {
+                try {
+                    String authorsJson = b.get("authors").toString();
+                    List<Map<String, Object>> authors = objectMapper.readValue(authorsJson, List.class);
+                    b.put("authors", authors);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            allBooksUpdated.add(b);
+        }
+        return allBooksUpdated;
     }
 
 

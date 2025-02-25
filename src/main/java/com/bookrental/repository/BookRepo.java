@@ -51,6 +51,16 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
 	Optional<Book> findByIdAndDeleted(Integer bookId, Boolean deleted);
 	
 	List<Book> findAllByDeleted(Boolean deleted);
+
+	@Query(value = "select b.id as \"bookId\", b.isbn ,b.name as \"bookName\", b.number_of_pages as \"numberOfPages\", b.photo, \n" +
+			"b.published_date as \"publishedDate\", b.rating ,\n" +
+			"b.stock_count as stockCount, COALESCE(jsonb_build_array(jsonb_build_object('authorId',a.id,'authorName',a.name))::text,'{}') as authors , \n" +
+			"c.id as categoryId, c.name as categoryName from book_author ba \n" +
+			"left join book b on ba.book_id=b.id\n" +
+			"left join author a on a.id=ba.author_id \n" +
+			"left join category c on c.id=b.category_id \n" +
+			"group by b.id,c.id,a.id", nativeQuery = true)
+	List<Map<String, Object>> getAllBooks();
 	
     @Query(value = "select id, name, isbn,number_of_pages as \"numberOfPages\",published_date as \"publishedDate\", rating, photo, stock_count as \"stockCount\", to_char(created_date, 'YYYY-MM-DD HH:MI:SS') as \"createdDate\",\n" +
 			"to_char(modified_date, 'YYYY-MM-DD HH:MI:SS') as \"lastModifiedDate\" from book where name ilike concat('%',?1,'%')\n" +
