@@ -41,6 +41,7 @@ public class MemberController extends BaseController {
                     @ApiResponse(responseCode = "400", description = "Invalid request.")
             }
     )
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     @PostMapping("")
     public ResponseObject addMember(@RequestBody @Valid MemberDto memberDto) {
 

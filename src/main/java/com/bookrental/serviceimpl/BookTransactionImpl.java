@@ -135,7 +135,9 @@ public class BookTransactionImpl implements BookTransactionService {
     @Override
     public void getBookTransactionOnExcel(BookPaginationRequest request, HttpServletResponse response) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         Integer offset=(request.getPage()+1)*request.getSize();
-        List<BookTransactionDetails> bookTransactionDetails = bookTransactionMapper.filterBookTransaction(request.getFromDate(), request.getToDate(), request.getIsDeleted(), request.getBookId(), request.getMemberId(),request.getRentStatus()!=null?request.getRentStatus().toString():null, offset, request.getSize());
+        List<BookTransactionDetails> bookTransactionDetails = bookTransactionMapper.filterBookTransaction(request.getFromDate(),
+                request.getToDate(), request.getIsDeleted(), request.getBookId(), request.getMemberId(),
+                request.getRentStatus()!=null?request.getRentStatus().toString():null, offset, request.getSize());
         bookSheetGenerator.getExcelSheet(bookTransactionDetails);
     }
 

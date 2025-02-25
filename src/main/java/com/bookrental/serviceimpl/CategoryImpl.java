@@ -30,6 +30,7 @@ public class CategoryImpl implements CategoryService {
         Category category = null;
         if (categoryDto.getId() != null) {
             category = categoryRepo.findByIdAndDeleted(categoryDto.getId(), Boolean.FALSE).orElseThrow(() -> new RuntimeException("Category id not found"));
+            CoustomBeanUtils.copyNonNullProperties(categoryDto, category);
         } else {
             String name = categoryDto.getName().trim();
             Optional<Category> byName = categoryRepo.findByNameAndDeleted(name,Boolean.TRUE);
