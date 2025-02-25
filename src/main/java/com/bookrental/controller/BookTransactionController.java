@@ -67,7 +67,7 @@ public class BookTransactionController extends BaseController {
                     @ApiResponse(responseCode = "400", description = "Invalid request.")
             }
     )
-    @GetMapping("/excel")
+    @PostMapping("/excel")
     public void getPaginatedBookTransactionInExcel(@RequestBody BookPaginationRequest paginationRequest, HttpServletResponse response) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         bookTransactionService.getBookTransactionOnExcel(paginationRequest,response);
  }
